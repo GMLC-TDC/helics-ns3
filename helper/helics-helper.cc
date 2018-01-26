@@ -17,7 +17,6 @@ HelicsHelper::HelicsHelper()
 : broker("")
 , name("ns3")
 , core("zmq")
-, stop(1.0)
 , timedelta(1.0)
 , coreinit("--loglevel=4")
 {
@@ -29,12 +28,40 @@ HelicsHelper::SetupFederate(void)
 {
   helics::FederateInfo fi (name);
   fi.coreType = helics::coreTypeFromString (core);
-  //fi.coreInitString = "--broker=" + "brokid" + " --broker_address=" + "addr" + " --federates 1";
-  //fi.coreInitString = "--federates 1";
   fi.timeDelta = timedelta;
   if (!coreinit.empty()) {
     fi.coreInitString = coreinit;
   }
+  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+}
+
+// Recognized args:
+// broker - address of the broker to connect
+// name - name of the federate
+// corename - name of the core to create or find
+// core - type of core to connect to
+// offset - offset of time steps
+// period - period of the federate
+// timedelta - the time delta of the federate
+// coreinit - the core initialization string
+// inputdelay
+// outputdelay
+// flags - named flag for the federate
+
+// Some default values:
+// timeDelta = timeEpsilon (minimum time advance allowed by federate)
+// outputDelay, inputDelay, period, offset = timeZero
+void
+HelicsHelper::SetupFederate(int argc, const char *const *argv)
+{
+  helics::FederateInfo fi (argc, argv);
+  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+}
+
+void
+HelicsHelper::SetupFederate(std::string &jsonString)
+{
+  helics::FederateInfo fi = helics::LoadFederateInfo (jsonString);
   helics_federate = std::make_shared<helics::MessageFederate> (fi);
 }
 
@@ -53,7 +80,6 @@ HelicsHelper::SetupCommandLine(CommandLine &cmd)
   cmd.AddValue ("broker", "address to connect the broker to", broker);
   cmd.AddValue ("name", "name of the ns3 federate", name);
   cmd.AddValue ("core", "name of the core to connect to", core);
-  cmd.AddValue ("stop", "the time to stop the player", stop);
   cmd.AddValue ("timedelta", "the time delta of the federate", timedelta);
   cmd.AddValue ("coreinit", "the core initializion string", coreinit);
 }

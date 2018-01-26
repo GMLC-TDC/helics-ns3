@@ -14,6 +14,8 @@ class HelicsHelper {
 public:
   HelicsHelper();
   void SetupFederate(void);
+  void SetupFederate(int argc, const char *const *argv);
+  void SetupFederate(std::string &jsonString);
   void SetupApplicationFederate(void);
   void SetupCommandLine(CommandLine &cmd);
 
@@ -25,7 +27,6 @@ private:
   std::string name;
   std::string type;
   std::string core;
-  double stop;
   double timedelta;
   std::string coreinit;
   ObjectFactory m_factory;
