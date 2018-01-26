@@ -68,8 +68,8 @@ main (int argc, char *argv[])
       LogComponentEnable ("HelicsSimulatorImpl", LOG_LEVEL_INFO);
     }
 
-  NS_LOG_INFO ("Calling helicsHelper.SetupFederate");
-  helicsHelper.SetupFederate();
+  NS_LOG_INFO ("Calling helicsHelper.SetupApplicationFederate");
+  helicsHelper.SetupApplicationFederate();
 
   nCsma = nCsma == 0 ? 1 : nCsma;
 

@@ -14,6 +14,7 @@ class HelicsHelper {
 public:
   HelicsHelper();
   void SetupFederate(void);
+  void SetupApplicationFederate(void);
   void SetupCommandLine(CommandLine &cmd);
 
   ApplicationContainer InstallFilter (Ptr<Node> node, const std::string &name) const;

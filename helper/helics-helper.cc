@@ -36,6 +36,12 @@ HelicsHelper::SetupFederate(void)
     fi.coreInitString = coreinit;
   }
   helics_federate = std::make_shared<helics::MessageFederate> (fi);
+}
+
+void
+HelicsHelper::SetupApplicationFederate(void)
+{
+  SetupFederate ();
   helics_endpoint = helics_federate->registerEndpoint ("fout");
 
   GlobalValue::Bind ("SimulatorImplementationType", StringValue ("ns3::HelicsSimulatorImpl"));
