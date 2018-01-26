@@ -153,7 +153,7 @@ def build(bld):
         'test/helics-test-suite.cc',
         ]
 
-    if bld.env['HELICS']:
+    if bld.env['ENABLE_HELICS']:
         module.use.extend(['HELICS', 'BOOST', 'ZMQ'])
 
     headers = bld(features='ns3header')
