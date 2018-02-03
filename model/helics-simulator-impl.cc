@@ -271,6 +271,12 @@ HelicsSimulatorImpl::Run (void)
           NS_LOG_INFO ("Granted time helics: " << granted);
           grantedTime = Time::FromDouble (granted, Time::S);
           NS_LOG_INFO ("  Granted time ns-3: " << grantedTime);
+          while (helics_federate->hasMessage()) {
+              NS_LOG_INFO ("message detected");
+              auto msg = helics_federate->getMessage();
+              std::cout << "received message from " << msg->source << " at " << static_cast<double>(msg->time) << " ::" << msg->data.to_string() << '\n';
+
+          }
         }
    }
 

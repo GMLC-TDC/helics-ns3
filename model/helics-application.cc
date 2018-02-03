@@ -123,7 +123,7 @@ HelicsApplication::SetFilterName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
   SetName(name);
-  Names::Add("helics_filter_"+name, this);
+  //Names::Add("helics_filter_"+name, this); not allowed, object already named
   m_filter_id = helics_federate->registerSourceFilter ("ns3_"+name, name);
   using std::placeholders::_1;
   std::function<void(std::unique_ptr<helics::Message>)> func;
@@ -359,7 +359,7 @@ HelicsApplication::FilterCallback (std::unique_ptr<helics::Message> message)
 void 
 HelicsApplication::EndpointCallback (helics::endpoint_id_t id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << "Helics endpoint callback");
+  NS_LOG_FUNCTION (this << "!!!!!!!!!!!!!!!!Helics endpoint callback");
 }
  
 InetSocketAddress HelicsApplication::GetLocalInet (void) const
@@ -486,7 +486,8 @@ HelicsApplication::Ns3Operator::setFilterCallback (std::function<void(std::uniqu
 std::unique_ptr<helics::Message>
 HelicsApplication::Ns3Operator::process (std::unique_ptr<helics::Message> message)
 {
-  return nullptr;
+  std::cout << "HelicsApplication::Ns3Operator::process" << std::endl;
+  return message;
 }
 
 } // Namespace ns3
