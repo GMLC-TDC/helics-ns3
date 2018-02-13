@@ -51,6 +51,7 @@ main (int argc, char *argv[])
   uint32_t nCsma = 3;
   std::string endpoint1 = "endpoint1";
   std::string endpoint2 = "endpoint2";
+  std::string finalDest = "finalDest";
 
   HelicsHelper helicsHelper;
 
@@ -60,6 +61,7 @@ main (int argc, char *argv[])
   helicsHelper.SetupCommandLine(cmd);
   cmd.AddValue ("endpoint1", "First helics endpoint", endpoint1);
   cmd.AddValue ("endpoint2", "Second helics endpoint", endpoint2);
+  cmd.AddValue ("finalDest", "Last helics endpoint", finalDest);
   cmd.Parse (argc,argv);
 
   if (verbose)
@@ -107,13 +109,13 @@ main (int argc, char *argv[])
   Ipv4InterfaceContainer csmaInterfaces;
   csmaInterfaces = address.Assign (csmaDevices);
 
-  ApplicationContainer apps1 = helicsHelper.InstallEndpoint (
-          csmaNodes.Get (nCsma), endpoint1);
+  ApplicationContainer apps1 = helicsHelper.InstallStaticSink (
+          csmaNodes.Get (nCsma), endpoint1, endpoint2);
   apps1.Start (Seconds (1.0));
   apps1.Stop (Seconds (10.0));
 
-  ApplicationContainer apps2 = helicsHelper.InstallEndpoint (
-          p2pNodes.Get (0), endpoint2);
+  ApplicationContainer apps2 = helicsHelper.InstallStaticSource (
+          p2pNodes.Get (0), endpoint2, finalDest);
   apps2.Start (Seconds (1.0));
   apps2.Stop (Seconds (10.0));
 

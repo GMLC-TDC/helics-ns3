@@ -255,11 +255,11 @@ HelicsSimulatorImpl::Run (void)
         {
           ProcessOneEvent ();
           nextTime = Next ();
-          NS_LOG_INFO ("    m_events->IsEmpty(): " << m_events->IsEmpty());
-          NS_LOG_INFO ("                 m_stop: " << m_stop);
-          NS_LOG_INFO ("         Next time ns-3: " << nextTime);
-          NS_LOG_INFO ("    Granted time helics: " << grantedTime);
-          NS_LOG_INFO ("nextTime <= grantedTime: " << (nextTime<=grantedTime));
+          //NS_LOG_INFO ("    m_events->IsEmpty(): " << m_events->IsEmpty());
+          //NS_LOG_INFO ("                 m_stop: " << m_stop);
+          //NS_LOG_INFO ("         Next time ns-3: " << nextTime);
+          //NS_LOG_INFO ("    Granted time helics: " << grantedTime);
+          //NS_LOG_INFO ("nextTime <= grantedTime: " << (nextTime<=grantedTime));
         }
 
       if (!m_stop)
