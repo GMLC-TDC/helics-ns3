@@ -3,6 +3,7 @@
 
 #include "ns3/application-container.h"
 #include "ns3/node-container.h"
+#include "ns3/ipv4.h"
 #include <memory>
 
 #include "ns3/helics.h"
@@ -66,6 +67,10 @@ HelicsHelper::InstallFilter (Ptr<Node> node, const std::string &name) const
       NS_FATAL_ERROR ("Failed to create HelicsFilterApplication");
     }
     app->SetFilterName (name);
+    Ptr<Ipv4> net = node->GetObject<Ipv4>();
+    Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+    Ipv4Address address = interface_address.GetLocal();
+    app->SetLocal(address, 1234);
     node->AddApplication (app);
     apps.Add (app);
     return apps;
@@ -81,6 +86,10 @@ HelicsHelper::InstallStaticSink (Ptr<Node> node, const std::string &name, const 
     }
     app->SetEndpointName (name);
     app->SetDestination (destination);
+    Ptr<Ipv4> net = node->GetObject<Ipv4>();
+    Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+    Ipv4Address address = interface_address.GetLocal();
+    app->SetLocal(address, 1234);
     node->AddApplication (app);
     apps.Add (app);
     return apps;
@@ -96,6 +105,10 @@ HelicsHelper::InstallStaticSource (Ptr<Node> node, const std::string &name, cons
     }
     app->SetEndpointName (name);
     app->SetDestination (destination);
+    Ptr<Ipv4> net = node->GetObject<Ipv4>();
+    Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+    Ipv4Address address = interface_address.GetLocal();
+    app->SetLocal(address, 1234);
     node->AddApplication (app);
     apps.Add (app);
     return apps;
