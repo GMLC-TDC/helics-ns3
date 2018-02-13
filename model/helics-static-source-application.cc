@@ -35,12 +35,12 @@ HelicsStaticSourceApplication::GetTypeId (void)
   return tid;
 }
 
-HelicsStaticSourceApplication::HelicsStaticSourceApplication ()
+HelicsStaticSourceApplication::HelicsStaticSourceApplication (void)
 {
   NS_LOG_FUNCTION (this);
 }
 
-HelicsStaticSourceApplication::~HelicsStaticSourceApplication()
+HelicsStaticSourceApplication::~HelicsStaticSourceApplication (void)
 {
   NS_LOG_FUNCTION (this);
 }
@@ -49,12 +49,15 @@ void
 HelicsStaticSourceApplication::SetDestination (const std::string &destination)
 {
   NS_LOG_FUNCTION (this << destination);
+
   m_destination = destination;
 }
 
 std::string
 HelicsStaticSourceApplication::GetDestination (void) const
 {
+  NS_LOG_FUNCTION (this);
+
   return m_destination;
 }
 
@@ -79,7 +82,7 @@ HelicsStaticSourceApplication::StartApplication (void)
 }
 
 void 
-HelicsStaticSourceApplication::StopApplication ()
+HelicsStaticSourceApplication::StopApplication (void)
 {
   NS_LOG_FUNCTION (this);
 
@@ -89,7 +92,7 @@ HelicsStaticSourceApplication::StopApplication ()
 void
 HelicsStaticSourceApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
 
   NS_FATAL_ERROR ("HelicsStaticSourceApplication should not filter messages");
 }
@@ -97,7 +100,7 @@ HelicsStaticSourceApplication::DoFilter (std::unique_ptr<helics::Message> messag
 void
 HelicsStaticSourceApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << id.value() << time << *message);
 
   NS_FATAL_ERROR ("HelicsStaticSourceApplication should not receive endpoint events");
 }
@@ -105,9 +108,11 @@ HelicsStaticSourceApplication::DoEndpoint (helics::endpoint_id_t id, helics::Tim
 void
 HelicsStaticSourceApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
 
-  helics_federate->sendMessage (m_endpoint_id, std::move (message));
+  NS_LOG_INFO ("sending message on to " << m_destination);
+
+  helics_federate->sendMessage (m_endpoint_id, m_destination, message->data.data(), message->data.size());
 }
 
 } // Namespace ns3
