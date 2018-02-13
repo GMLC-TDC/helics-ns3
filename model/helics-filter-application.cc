@@ -57,7 +57,7 @@ HelicsFilterApplication::StartApplication (void)
 }
 
 void 
-HelicsFilterApplication::StopApplication ()
+HelicsFilterApplication::StopApplication (void)
 {
   NS_LOG_FUNCTION (this);
 
@@ -67,21 +67,24 @@ HelicsFilterApplication::StopApplication ()
 void
 HelicsFilterApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
+
   Send (message->dest, std::move (message));
 }
 
 void
 HelicsFilterApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << id.value() << time << *message);
+
   NS_FATAL_ERROR ("HelicsFilterApplication should not receive endpoint events");
 }
 
 void
 HelicsFilterApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
+
   helics_federate->sendMessage (helics_endpoint, std::move (message));
 }
 

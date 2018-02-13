@@ -79,7 +79,7 @@ HelicsStaticSinkApplication::StartApplication (void)
 }
 
 void 
-HelicsStaticSinkApplication::StopApplication ()
+HelicsStaticSinkApplication::StopApplication (void)
 {
   NS_LOG_FUNCTION (this);
 
@@ -89,7 +89,7 @@ HelicsStaticSinkApplication::StopApplication ()
 void
 HelicsStaticSinkApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
 
   NS_FATAL_ERROR ("HelicsStaticSinkApplication should not filter messages");
 }
@@ -97,7 +97,7 @@ HelicsStaticSinkApplication::DoFilter (std::unique_ptr<helics::Message> message)
 void
 HelicsStaticSinkApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << id.value() << time << *message);
 
   Send(m_destination, std::move (message));
 }
@@ -105,7 +105,7 @@ HelicsStaticSinkApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time 
 void
 HelicsStaticSinkApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
 
   NS_FATAL_ERROR ("HelicsStaticSinkApplication should not read from socket");
 }

@@ -257,20 +257,20 @@ HelicsApplication::NewTag ()
 void 
 HelicsApplication::FilterCallback (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
   DoFilter (std::move (message));
 }
  
 void 
 HelicsApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
 }
  
 void 
 HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << dest << *message);
  
   Ptr<Packet> p;
 
@@ -385,14 +385,14 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
 void 
 HelicsApplication::EndpointCallback (helics::endpoint_id_t id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << id.value() << time);
   DoEndpoint (id, time);
 }
  
 void 
 HelicsApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << id.value() << time);
   auto message = helics_federate->getMessage(id);
   DoEndpoint (id, time, std::move (message));
 }
@@ -400,16 +400,18 @@ HelicsApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time)
 void 
 HelicsApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << id.value() << time << *message);
 }
 
 InetSocketAddress HelicsApplication::GetLocalInet (void) const
 {
+  NS_LOG_FUNCTION (this);
   return InetSocketAddress(Ipv4Address::ConvertFrom(m_localAddress), m_localPort);
 }
 
 Inet6SocketAddress HelicsApplication::GetLocalInet6 (void) const
 {
+  NS_LOG_FUNCTION (this);
   return Inet6SocketAddress(Ipv6Address::ConvertFrom(m_localAddress), m_localPort);
 }
 
@@ -517,7 +519,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
 void
 HelicsApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << *message);
 }
 
 /** HELICS message FilterOperator for ns3 */
