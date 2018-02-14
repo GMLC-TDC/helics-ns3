@@ -3,10 +3,14 @@
 
 #include "ns3/application-container.h"
 #include "ns3/node-container.h"
+#include "ns3/ipv4.h"
 #include <memory>
 
 #include "ns3/helics.h"
 #include "ns3/helics-application.h"
+#include "ns3/helics-filter-application.h"
+#include "ns3/helics-static-sink-application.h"
+#include "ns3/helics-static-source-application.h"
 #include "ns3/helics-helper.h"
 
 #include "helics/core/core-types.hpp"
@@ -18,9 +22,11 @@ HelicsHelper::HelicsHelper()
 , name("ns3")
 , core("zmq")
 , timedelta(1.0)
-, coreinit("--loglevel=4")
+, coreinit("--loglevel=2")
 {
-    m_factory.SetTypeId (HelicsApplication::GetTypeId ());
+    m_factory_filter.SetTypeId (HelicsFilterApplication::GetTypeId ());
+    m_factory_sink.SetTypeId (HelicsStaticSinkApplication::GetTypeId ());
+    m_factory_source.SetTypeId (HelicsStaticSourceApplication::GetTypeId ());
 }
 
 void
@@ -88,19 +94,53 @@ ApplicationContainer
 HelicsHelper::InstallFilter (Ptr<Node> node, const std::string &name) const
 {
     ApplicationContainer apps;
-    Ptr<HelicsApplication> app = m_factory.Create<HelicsApplication> ();
+    Ptr<HelicsFilterApplication> app = m_factory_filter.Create<HelicsFilterApplication> ();
+    if (!app) {
+      NS_FATAL_ERROR ("Failed to create HelicsFilterApplication");
+    }
     app->SetFilterName (name);
+    Ptr<Ipv4> net = node->GetObject<Ipv4>();
+    Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+    Ipv4Address address = interface_address.GetLocal();
+    app->SetLocal(address, 1234);
     node->AddApplication (app);
     apps.Add (app);
     return apps;
 }
 
 ApplicationContainer
-HelicsHelper::InstallEndpoint (Ptr<Node> node, const std::string &name) const
+HelicsHelper::InstallStaticSink (Ptr<Node> node, const std::string &name, const std::string &destination) const
 {
     ApplicationContainer apps;
-    Ptr<HelicsApplication> app = m_factory.Create<HelicsApplication> ();
+    Ptr<HelicsStaticSinkApplication> app = m_factory_sink.Create<HelicsStaticSinkApplication> ();
+    if (!app) {
+      NS_FATAL_ERROR ("Failed to create HelicsStaticSinkApplication");
+    }
     app->SetEndpointName (name);
+    app->SetDestination (destination);
+    Ptr<Ipv4> net = node->GetObject<Ipv4>();
+    Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+    Ipv4Address address = interface_address.GetLocal();
+    app->SetLocal(address, 1234);
+    node->AddApplication (app);
+    apps.Add (app);
+    return apps;
+}
+
+ApplicationContainer
+HelicsHelper::InstallStaticSource (Ptr<Node> node, const std::string &name, const std::string &destination) const
+{
+    ApplicationContainer apps;
+    Ptr<HelicsStaticSourceApplication> app = m_factory_source.Create<HelicsStaticSourceApplication> ();
+    if (!app) {
+      NS_FATAL_ERROR ("Failed to create HelicsStaticSinkApplication");
+    }
+    app->SetEndpointName (name);
+    app->SetDestination (destination);
+    Ptr<Ipv4> net = node->GetObject<Ipv4>();
+    Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+    Ipv4Address address = interface_address.GetLocal();
+    app->SetLocal(address, 1234);
     node->AddApplication (app);
     apps.Add (app);
     return apps;

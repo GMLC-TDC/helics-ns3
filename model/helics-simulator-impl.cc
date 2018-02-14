@@ -239,38 +239,44 @@ HelicsSimulatorImpl::Run (void)
 
   grantedTime = Seconds (0.0);
   nextTime = Next ();
-  NS_LOG_INFO ("     Next time ns-3: " << nextTime);
-  NS_LOG_INFO ("Granted time helics: " << grantedTime);
 
   // Keep processing events until stop time is reached
   while (!m_stop) 
     {
       // Only process events up until the granted time
-      NS_LOG_INFO ("    m_events->IsEmpty(): " << m_events->IsEmpty());
-      NS_LOG_INFO ("                 m_stop: " << m_stop);
-      NS_LOG_INFO ("         Next time ns-3: " << nextTime);
-      NS_LOG_INFO ("    Granted time helics: " << grantedTime);
-      NS_LOG_INFO ("nextTime <= grantedTime: " << (nextTime<=grantedTime));
+      NS_LOG_INFO ("Outer:     m_events->IsEmpty(): " << m_events->IsEmpty());
+      NS_LOG_INFO ("Outer:                  m_stop: " << m_stop);
+      NS_LOG_INFO ("Outer:          Next time ns-3: " << nextTime);
+      NS_LOG_INFO ("Outer:     Granted time helics: " << grantedTime);
+      NS_LOG_INFO ("Outer: nextTime <= grantedTime: " << (nextTime<=grantedTime));
       while (!m_events->IsEmpty () && !m_stop && nextTime <= grantedTime) 
         {
           ProcessOneEvent ();
           nextTime = Next ();
-          NS_LOG_INFO ("    m_events->IsEmpty(): " << m_events->IsEmpty());
-          NS_LOG_INFO ("                 m_stop: " << m_stop);
-          NS_LOG_INFO ("         Next time ns-3: " << nextTime);
-          NS_LOG_INFO ("    Granted time helics: " << grantedTime);
-          NS_LOG_INFO ("nextTime <= grantedTime: " << (nextTime<=grantedTime));
+          NS_LOG_INFO ("Inner:     m_events->IsEmpty(): " << m_events->IsEmpty());
+          NS_LOG_INFO ("Inner:                  m_stop: " << m_stop);
+          NS_LOG_INFO ("Inner:          Next time ns-3: " << nextTime);
+          NS_LOG_INFO ("Inner:     Granted time helics: " << grantedTime);
+          NS_LOG_INFO ("Inner: nextTime <= grantedTime: " << (nextTime<=grantedTime));
         }
 
       if (!m_stop)
         {
           m_currentTs = grantedTime.GetTimeStep ();
           requested = Next ().GetSeconds ();
-          NS_LOG_INFO ("    Requesting time: " << requested);
+          NS_LOG_INFO ("Request:     Requesting time: " << requested);
           granted = helics_federate->requestTime (requested);
-          NS_LOG_INFO ("Granted time helics: " << granted);
+          NS_LOG_INFO ("Request: Granted time helics: " << granted);
           grantedTime = Time::FromDouble (granted, Time::S);
-          NS_LOG_INFO ("  Granted time ns-3: " << grantedTime);
+          NS_LOG_INFO ("Request:   Granted time ns-3: " << grantedTime);
+          while (helics_federate->hasMessage()) {
+              NS_LOG_INFO ("Request: message detected");
+              auto msg = helics_federate->getMessage();
+              std::cout << "Request: received message from " << msg->source << " at " << static_cast<double>(msg->time) << " ::" << msg->data.to_string() << '\n';
+
+          }
+          // A time request may have triggered new events, so update nextTime.
+          nextTime = Next ();
         }
    }
 
@@ -307,6 +313,7 @@ HelicsSimulatorImpl::Schedule (Time const &delay, EventImpl *event)
   NS_ASSERT_MSG (SystemThread::Equals (m_main), "Simulator::Schedule Thread-unsafe invocation!");
 
   Time tAbsolute = delay + TimeStep (m_currentTs);
+  NS_LOG_INFO ("m_currentTs='" << m_currentTs << "' tAbsolute='" << tAbsolute << "'");
 
   NS_ASSERT (tAbsolute.IsPositive ());
   NS_ASSERT (tAbsolute >= TimeStep (m_currentTs));

@@ -20,7 +20,8 @@ public:
   void SetupCommandLine(CommandLine &cmd);
 
   ApplicationContainer InstallFilter (Ptr<Node> node, const std::string &name) const;
-  ApplicationContainer InstallEndpoint (Ptr<Node> node, const std::string &name) const;
+  ApplicationContainer InstallStaticSink (Ptr<Node> node, const std::string &name, const std::string &destination) const;
+  ApplicationContainer InstallStaticSource (Ptr<Node> node, const std::string &name, const std::string &destination) const;
 
 private:
   std::string broker;
@@ -29,7 +30,9 @@ private:
   std::string core;
   double timedelta;
   std::string coreinit;
-  ObjectFactory m_factory;
+  ObjectFactory m_factory_filter;
+  ObjectFactory m_factory_sink;
+  ObjectFactory m_factory_source;
 };
 
 }

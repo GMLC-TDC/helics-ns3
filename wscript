@@ -144,6 +144,9 @@ def build(bld):
     module.source = [
         'model/helics.cc',
         'model/helics-application.cc',
+        'model/helics-filter-application.cc',
+        'model/helics-static-sink-application.cc',
+        'model/helics-static-source-application.cc',
         'model/helics-simulator-impl.cc',
         'model/helics-id-tag.cc',
         'helper/helics-helper.cc',
@@ -161,6 +164,9 @@ def build(bld):
     headers.source = [
         'model/helics.h',
         'model/helics-application.h',
+        'model/helics-filter-application.h',
+        'model/helics-static-sink-application.h',
+        'model/helics-static-source-application.h',
         'model/helics-simulator-impl.h',
         'model/helics-id-tag.h',
         'helper/helics-helper.h',

@@ -28,7 +28,13 @@
 int 
 main (int argc, char *argv[])
 {
-  helics::FederateInfo fi ("fed-sndrcv");
+  if (argc > 0) {
+      std::cout << "argc=" << argc << std::endl;
+      for (int i=0; i<argc; ++i) {
+          std::cout << "argv[" << i << "]=" << argv[i] << std::endl;
+      }
+  }
+  helics::FederateInfo fi (argc > 1 ? argv[1] : "fed-sndrcv");
   fi.coreType = helics::coreTypeFromString ("zmq");
   fi.coreInitString = "--loglevel=4";
   auto mFed = std::make_shared<helics::MessageFederate> (fi);
@@ -39,7 +45,7 @@ main (int argc, char *argv[])
   auto granted = mFed->requestTime (1.0);
   std::cout << "fed-sndrcv granted time " << granted << std::endl;
   helics::data_block data (500, 'a');
-  mFed->sendMessage (p1, "ns3/endpoint1", data);
+  mFed->sendMessage (p1, "fed-sndrcv/endpoint1", data);
   std::cout << "fed-sndrcv sent message to ns3/endpoint1" << std::endl;
   while (granted < 8.0) {
     granted = mFed->requestTime (granted + 1.0);
