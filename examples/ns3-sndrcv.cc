@@ -51,7 +51,7 @@ main (int argc, char *argv[])
   uint32_t nCsma = 3;
   std::string endpoint1 = "endpoint1";
   std::string endpoint2 = "endpoint2";
-  std::string finalDest = "finalDest";
+  std::string finalDest = "fed/endpoint2";
 
   HelicsHelper helicsHelper;
 
@@ -68,6 +68,9 @@ main (int argc, char *argv[])
     {
       LogComponentEnable ("HelicsExample", LOG_LEVEL_INFO);
       LogComponentEnable ("HelicsSimulatorImpl", LOG_LEVEL_LOGIC);
+      LogComponentEnable ("HelicsStaticSinkApplication", LOG_LEVEL_LOGIC);
+      LogComponentEnable ("HelicsStaticSourceApplication", LOG_LEVEL_LOGIC);
+      LogComponentEnable ("HelicsApplication", LOG_LEVEL_LOGIC);
     }
 
   NS_LOG_INFO ("Calling helicsHelper.SetupApplicationFederate");
@@ -111,12 +114,12 @@ main (int argc, char *argv[])
 
   ApplicationContainer apps1 = helicsHelper.InstallStaticSink (
           csmaNodes.Get (nCsma), endpoint1, endpoint2);
-  apps1.Start (Seconds (1.0));
+  apps1.Start (Seconds (0.0));
   apps1.Stop (Seconds (10.0));
 
   ApplicationContainer apps2 = helicsHelper.InstallStaticSource (
           p2pNodes.Get (0), endpoint2, finalDest);
-  apps2.Start (Seconds (1.0));
+  apps2.Start (Seconds (0.0));
   apps2.Stop (Seconds (10.0));
 
   Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
@@ -124,7 +127,7 @@ main (int argc, char *argv[])
   pointToPoint.EnablePcapAll ("second");
   csma.EnablePcap ("second", csmaDevices.Get (1), true);
 
-  Simulator::Stop (Seconds (11.0));
+  Simulator::Stop (Seconds (10.0));
 
   Simulator::Run ();
 
