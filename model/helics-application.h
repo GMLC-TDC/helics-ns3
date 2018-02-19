@@ -54,7 +54,7 @@ public:
    * \brief set the named of this endpoint
    * \param name name
    */
-  void SetEndpointName (const std::string &name);
+  void SetEndpointName (const std::string &name, bool is_global);
   /**
    * \brief set the local address and port
    * \param ip local IPv4 address

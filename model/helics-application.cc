@@ -132,11 +132,16 @@ HelicsApplication::SetFilterName (const std::string &name)
 }
 
 void
-HelicsApplication::SetEndpointName (const std::string &name)
+HelicsApplication::SetEndpointName (const std::string &name, bool is_global)
 {
-  NS_LOG_FUNCTION (this << name);
+  NS_LOG_FUNCTION (this << name << is_global);
   SetName(name);
-  m_endpoint_id = helics_federate->registerEndpoint (name);
+  if (is_global) {
+    m_endpoint_id = helics_federate->registerGlobalEndpoint (name);
+  }
+  else {
+    m_endpoint_id = helics_federate->registerEndpoint (name);
+  }
   using std::placeholders::_1;
   using std::placeholders::_2;
   std::function<void(helics::endpoint_id_t,helics::Time)> func;
