@@ -50,6 +50,21 @@ NS_LOG_COMPONENT_DEFINE ("HelicsApplication");
 
 NS_OBJECT_ENSURE_REGISTERED (HelicsApplication);
 
+std::string&
+HelicsApplication::SanitizeName (std::string &name)
+{
+  std::replace (name.begin(), name.end(), '/', '+');
+  return name;
+}
+
+std::string
+HelicsApplication::SanitizeName (const std::string &name)
+{
+  std::string copy = name;
+  std::replace (copy.begin(), copy.end(), '/', '+');
+  return copy;
+}
+
 TypeId
 HelicsApplication::GetTypeId (void)
 {
@@ -122,13 +137,13 @@ void
 HelicsApplication::SetFilterName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
-  SetName(name);
   m_filter_id = helics_federate->registerSourceFilter ("ns3_"+name, name);
   using std::placeholders::_1;
   std::function<void(std::unique_ptr<helics::Message>)> func;
   func = std::bind (&HelicsApplication::FilterCallback, this, _1);
   m_filterOp = std::make_shared<Ns3Operator> (func);
   helics_federate->setFilterOperator (m_filter_id, m_filterOp);
+  SetEndpointName(name, false);
 }
 
 void
@@ -154,7 +169,7 @@ HelicsApplication::SetName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
   m_name = name;
-  Names::Add("helics_"+name, this);
+  Names::Add (SanitizeName ("helics_"+name), this);
 }
 
 std::string
@@ -280,7 +295,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   Ptr<Packet> p;
 
   // Find the HelicsApplication for the destination.
-  Ptr<HelicsApplication> to = Names::Find<HelicsApplication>("helics_"+dest);
+  Ptr<HelicsApplication> to = Names::Find<HelicsApplication>(SanitizeName ("helics_"+dest));
   if (!to) {
     NS_FATAL_ERROR("failed HelicsApplication lookup to '" << dest << "'");
   }
@@ -543,7 +558,8 @@ HelicsApplication::Ns3Operator::setFilterCallback (std::function<void(std::uniqu
 std::unique_ptr<helics::Message>
 HelicsApplication::Ns3Operator::process (std::unique_ptr<helics::Message> message)
 {
-  std::cout << "HelicsApplication::Ns3Operator::process" << std::endl;
+  std::cout << "HelicsApplication::Ns3Operator::process " << *message << std::endl;
+  filterCallback (std::move (message));
   return message;
 }
 

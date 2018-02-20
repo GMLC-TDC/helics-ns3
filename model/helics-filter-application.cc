@@ -69,7 +69,10 @@ HelicsFilterApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
   NS_LOG_FUNCTION (this << *message);
 
-  Send (message->dest, std::move (message));
+  message->original_dest = message->dest;
+  message->dest = helics_federate->getName() + "/" + message->dest;
+
+  //Send (message->original_dest, std::make_unique<helics::Message> (*message));
 }
 
 void
@@ -77,7 +80,7 @@ HelicsFilterApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time
 {
   NS_LOG_FUNCTION (this << id.value() << time << *message);
 
-  NS_FATAL_ERROR ("HelicsFilterApplication should not receive endpoint events");
+  //NS_FATAL_ERROR ("HelicsFilterApplication should not receive endpoint events");
 }
 
 void

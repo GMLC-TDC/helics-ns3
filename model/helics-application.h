@@ -36,6 +36,9 @@ public:
    */
   static TypeId GetTypeId (void);
 
+  static std::string& SanitizeName (std::string &name);
+  static std::string SanitizeName (const std::string &name);
+
   HelicsApplication ();
 
   virtual ~HelicsApplication ();
