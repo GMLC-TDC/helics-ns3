@@ -22,7 +22,7 @@ HelicsHelper::HelicsHelper()
 , name("ns3")
 , core("zmq")
 , timedelta(1.0)
-, coreinit("--loglevel=2")
+, coreinit("")
 {
     m_factory_filter.SetTypeId (HelicsFilterApplication::GetTypeId ());
     m_factory_sink.SetTypeId (HelicsStaticSinkApplication::GetTypeId ());
