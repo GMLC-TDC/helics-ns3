@@ -58,7 +58,7 @@ def configure(conf):
         # bake.py uses ../../build, while ns-3-dev uses ../helics
     if not conf.env['WITH_HELICS']:
         conf.msg("Checking for HELICS location", False)
-        conf.report_optional_feature("helics", "NS-3 HELICS Integration", False,
+        conf.report_optional_feature("helics", "HELICS Integration", False,
                                      "HELICS not enabled (see option --with-helics)")
         # Add this module to the list of modules that won't be built
         # if they are enabled.
@@ -124,7 +124,7 @@ int main()
         conf.env['HELICS'] = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
         conf.env.append_value('LIB_HELICS', 'helics-staticd')
 
-    conf.report_optional_feature("helics", "NS-3 HELICS Integration", conf.env['HELICS'], "HELICS library not found")
+    conf.report_optional_feature("helics", "HELICS Integration", conf.env['HELICS'], "HELICS library not found")
 
     if conf.env['HELICS']:
         conf.env['ENABLE_HELICS'] = True
