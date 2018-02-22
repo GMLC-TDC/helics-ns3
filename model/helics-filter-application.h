@@ -45,7 +45,6 @@ protected:
   virtual void DoDispose (void) override;
   virtual void StartApplication (void) override;
   virtual void StopApplication (void) override;
-  virtual void DoFilter (std::unique_ptr<helics::Message> message) override;
   virtual void DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message) override;
   virtual void DoRead (std::unique_ptr<helics::Message> message) override;
   

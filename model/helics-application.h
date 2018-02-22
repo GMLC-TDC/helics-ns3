@@ -13,6 +13,7 @@
 
 #include "helics-id-tag.h"
 #include "helics/helics.hpp"
+#include "helics/application_api/MessageOperators.hpp"
 
 namespace ns3 {
 
@@ -93,7 +94,7 @@ public:
    *
    * This function is called internally by HELICS.
    */
-  void FilterCallback (std::unique_ptr<helics::Message> message);
+  std::string FilterReroute (const std::string &dest);
 
   /**
    * \brief Receive a HELICS message.
@@ -145,21 +146,7 @@ private:
   helics::filter_id_t m_filter_id;
   std::map<uint32_t,std::unique_ptr<helics::Message> > m_messages;
 
-  class Ns3Operator : public helics::FilterOperator
-  {
-  public:
-    /** default constructor */
-    Ns3Operator () = default;
-    /** set the filter callback function in the constructor */
-    Ns3Operator (std::function<void(std::unique_ptr<helics::Message> message)> cb);
-    /** set the filter callback function */
-    void setFilterCallback (std::function<void(std::unique_ptr<helics::Message> message)> cb);
-  private:
-    std::function<void(std::unique_ptr<helics::Message> message)> filterCallback; //!<the filter callback function
-    virtual std::unique_ptr<helics::Message> process (std::unique_ptr<helics::Message> message) override;
-  };
-
-  std::shared_ptr<Ns3Operator> m_filterOp; //!< the filter operator for this application
+  std::shared_ptr<helics::MessageDestOperator> m_filterOp; //!< the filter operator for this application
 };
 
 } // namespace ns3

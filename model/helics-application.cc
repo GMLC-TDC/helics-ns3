@@ -139,9 +139,10 @@ HelicsApplication::SetFilterName (const std::string &name)
   NS_LOG_FUNCTION (this << name);
   m_filter_id = helics_federate->registerSourceFilter ("ns3_"+name, name);
   using std::placeholders::_1;
-  std::function<void(std::unique_ptr<helics::Message>)> func;
-  func = std::bind (&HelicsApplication::FilterCallback, this, _1);
-  m_filterOp = std::make_shared<Ns3Operator> (func);
+  std::function<std::string(const std::string&)> func;
+  func = std::bind (&HelicsApplication::FilterReroute, this, _1);
+  m_filterOp = std::make_shared<helics::MessageDestOperator> ();
+  m_filterOp->setDestFunction (func);
   helics_federate->setFilterOperator (m_filter_id, m_filterOp);
   SetEndpointName(name, false);
 }
@@ -274,11 +275,11 @@ HelicsApplication::NewTag ()
   return HelicsIdTag(m_next_tag_id++);
 }
 
-void 
-HelicsApplication::FilterCallback (std::unique_ptr<helics::Message> message)
+std::string
+HelicsApplication::FilterReroute (const std::string &dest)
 {
-  NS_LOG_FUNCTION (this << *message);
-  DoFilter (std::move (message));
+  NS_LOG_FUNCTION (this << dest);
+  return helics_federate->getName() + '/' + dest;
 }
  
 void 
@@ -540,27 +541,6 @@ void
 HelicsApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
   NS_LOG_FUNCTION (this << *message);
-}
-
-/** HELICS message FilterOperator for ns3 */
-
-HelicsApplication::Ns3Operator::Ns3Operator (std::function<void(std::unique_ptr<helics::Message> message)> cb)
-{
-  setFilterCallback (cb);
-}
-
-void
-HelicsApplication::Ns3Operator::setFilterCallback (std::function<void(std::unique_ptr<helics::Message> message)> cb)
-{
-  filterCallback = cb;
-}
-
-std::unique_ptr<helics::Message>
-HelicsApplication::Ns3Operator::process (std::unique_ptr<helics::Message> message)
-{
-  std::cout << "HelicsApplication::Ns3Operator::process " << *message << std::endl;
-  filterCallback (std::move (message));
-  return message;
 }
 
 } // Namespace ns3
