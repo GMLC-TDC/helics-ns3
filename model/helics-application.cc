@@ -19,6 +19,8 @@
 #include <fstream>
 #include <vector>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ns3/log.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/ipv6-address.h"
@@ -138,11 +140,17 @@ HelicsApplication::SetFilterName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
   m_filter_id = helics_federate->registerSourceFilter ("ns3_"+name, name);
-  using std::placeholders::_1;
-  std::function<std::string(const std::string&)> func;
-  func = std::bind (&HelicsApplication::FilterReroute, this, _1);
-  m_filterOp = std::make_shared<helics::MessageDestOperator> ();
-  m_filterOp->setDestFunction (func);
+  m_filterOp = std::make_shared<helics::MessageDestOperator> ([this](const std::string &src, const std::string &dest)
+      {
+          if (boost::starts_with(src, helics_federate->getName())) {
+              NS_LOG_INFO ("skipping rename, sent to self: " << src);
+              return dest;
+          }
+          else {
+              NS_LOG_INFO ("renaming: " << src);
+              return helics_federate->getName() + '/' + src;
+          }
+      });
   helics_federate->setFilterOperator (m_filter_id, m_filterOp);
   SetEndpointName(name, false);
 }
@@ -275,13 +283,6 @@ HelicsApplication::NewTag ()
   return HelicsIdTag(m_next_tag_id++);
 }
 
-std::string
-HelicsApplication::FilterReroute (const std::string &dest)
-{
-  NS_LOG_FUNCTION (this << dest);
-  return helics_federate->getName() + '/' + dest;
-}
- 
 void 
 HelicsApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
@@ -406,7 +407,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
 void 
 HelicsApplication::EndpointCallback (helics::endpoint_id_t id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << id.value() << time);
+  NS_LOG_FUNCTION (this << m_name << id.value() << time);
   DoEndpoint (id, time);
 }
  

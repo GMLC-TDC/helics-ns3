@@ -53,6 +53,7 @@ int main (int argc, char *argv[])
     helics::FederateInfo fi(myname);
     fi.loadInfoFromArgs(argc, argv);
     //fi.logLevel = 5;
+    fi.timeDelta = helics::loadTimeFromString("1s");
     std::shared_ptr<helics::Broker> brk;
     if (vm.count("startbroker") > 0)
     {
@@ -74,9 +75,10 @@ int main (int argc, char *argv[])
     mFed->enterExecutionState ();
     std::cout << "entered exec State\n";
     for (int i=1; i<10; ++i) {
-        std::string message = "message sent from "+name+"/"+srcEndpoint+" to "+name+" at time " + std::to_string(i);
+        std::string message = "message sent from "+name+"/"+srcEndpoint+" to "+name+"/"+dstEndpoint+" at time " + std::to_string(i);
         mFed->sendMessage(idsource, name+"/"+dstEndpoint, message.data(), message.size());
         std::cout << message << std::endl;
+        std::cout << "requesting time " << static_cast<double> (i) << "\n";
         auto newTime = mFed->requestTime (i);
         std::cout << "processed time " << static_cast<double> (newTime) << "\n";
         while (mFed->hasMessage())
@@ -137,7 +139,7 @@ bool argumentParser (int argc, const char * const *argv, po::variables_map &vm_m
 
     if (cmd_vm.count ("version") > 0)
     {
-        std::cout << helics::versionString () << '\n';
+        std::cout << helics::versionString << '\n';
         return true;
     }
 

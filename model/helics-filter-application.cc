@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <sstream>
 #include <string>
+#include <utility>
 
 namespace ns3 {
 
@@ -77,6 +78,7 @@ HelicsFilterApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
   NS_LOG_FUNCTION (this << *message);
 
+  std::swap(message->dest, message->original_dest);
   helics_federate->sendMessage (helics_endpoint, std::move (message));
 }
 

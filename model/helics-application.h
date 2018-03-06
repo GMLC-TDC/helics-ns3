@@ -90,13 +90,6 @@ public:
   void Send (std::string dest, std::unique_ptr<helics::Message> message);
 
   /**
-   * \brief Handle a packet creation based on HELICS data.
-   *
-   * This function is called internally by HELICS.
-   */
-  std::string FilterReroute (const std::string &dest);
-
-  /**
    * \brief Receive a HELICS message.
    *
    * This function is called internally by HELICS.

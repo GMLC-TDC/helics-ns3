@@ -150,7 +150,7 @@ bool argumentParser (int argc, const char * const *argv, po::variables_map &vm_m
 
     if (cmd_vm.count ("version") > 0)
     {
-        std::cout << helics::versionString () << '\n';
+        std::cout << helics::versionString << '\n';
         return true;
     }
 
