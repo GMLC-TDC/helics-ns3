@@ -85,6 +85,7 @@ HelicsSimulatorImpl::HelicsSimulatorImpl ()
   m_currentTs = 0;
   m_currentContext = Simulator::NO_CONTEXT;
   m_unscheduledEvents = 0;
+  m_eventCount = 0;
   m_eventsWithContextEmpty = true;
   m_main = SystemThread::Self();
 }
@@ -158,6 +159,7 @@ HelicsSimulatorImpl::ProcessOneEvent (void)
 
   NS_ASSERT (next.key.m_ts >= m_currentTs);
   m_unscheduledEvents--;
+  m_eventCount++;
 
   NS_LOG_LOGIC ("handle " << next.key.m_ts);
   m_currentTs = next.key.m_ts;
@@ -493,6 +495,12 @@ uint32_t
 HelicsSimulatorImpl::GetContext (void) const
 {
   return m_currentContext;
+}
+
+uint64_t
+HelicsSimulatorImpl::GetEventCount (void) const
+{
+  return m_eventCount;
 }
 
 } // namespace ns3
