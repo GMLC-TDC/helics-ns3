@@ -5,9 +5,25 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: ls
-  displayName: 'Check directory contents'
+- script: |
+    sudo apt-get install -y libboost-dev libboost-filesystem-dev libboost-system-dev libboost-date-time-dev libboost-timer-dev libboost-chrono-dev libzmq5-dev
+  displayName: 'Apt install Boost and ZMQ (for HELICS)'
 
 - script: |
-    hg clone http://code.nsnam.org/ns-3-dev/
+    shopt -s extglob dotglob
+    mkdir helics
+    mv !(helics) helics
+    shopt -u dotglob
+  displayName: 'Copy helics-ns3 module files into a subfolder'
+
+- script: hg clone http://code.nsnam.org/ns-3-dev/
   displayName: 'Clone ns-3'
+
+- script: |
+    mv helics ns-3-dev/contrib
+    cd ns-3-dev
+    ./waf configure --disable-werror
+  displayName: 'Configure ns-3 module'
+
+- script: echo $PWD
+  displayName: 'Check pwd after another inline script executes'
