@@ -6,8 +6,8 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get install -y libboost-dev libboost-filesystem-dev libboost-system-dev libboost-date-time-dev libboost-timer-dev libboost-chrono-dev libzmq5-dev
-  displayName: 'Apt install Boost and ZMQ (for HELICS)'
+    sudo apt-get install -y libboost-dev libboost-signals-dev libboost-filesystem-dev libboost-system-dev libboost-date-time-dev libboost-timer-dev libboost-chrono-dev libzmq5-dev
+  displayName: 'Apt install required Boost and ZeroMQ libraries'
 
 - script: |
     shopt -s extglob dotglob
@@ -23,7 +23,12 @@ steps:
     mv helics ns-3-dev/contrib
     cd ns-3-dev
     ./waf configure --disable-werror
-  displayName: 'Configure ns-3 module'
+  displayName: 'Configure ns-3'
+
+- script: |
+    cd ns-3-dev
+    ./waf build
+  displayName: 'Build ns-3'
 
 - script: echo $PWD
   displayName: 'Check pwd after another inline script executes'
