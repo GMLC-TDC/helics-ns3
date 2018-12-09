@@ -23,7 +23,7 @@ steps:
     cd build
     cmake -GNinja ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF
     ninja
-    ninja install
+    sudo ninja install
   displayName: 'Install HELICS'
 
 - script: hg clone http://code.nsnam.org/ns-3-dev/
