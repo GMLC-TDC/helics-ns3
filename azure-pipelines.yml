@@ -6,8 +6,17 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get install -y libboost-dev libboost-signals-dev libboost-filesystem-dev libboost-system-dev libboost-date-time-dev libboost-timer-dev libboost-chrono-dev libzmq5-dev
+    sudo apt-get install -y libboost-dev libboost-signals-dev libboost-program-options-dev libboost-filesystem-dev libboost-system-dev libboost-date-time-dev libboost-timer-dev libboost-chrono-dev libzmq5-dev ninja-build
   displayName: 'Apt install required Boost and ZeroMQ libraries'
+
+- script: |
+    git clone https://github.com/GMLC-TDC/HELICS-src
+    cd HELICS-src
+    mkdir build
+    cd build
+    cmake ../
+    ninja install
+  displayName: 'Install HELICS'
 
 - script: |
     shopt -s extglob dotglob
@@ -17,18 +26,15 @@ steps:
   displayName: 'Copy helics-ns3 module files into a subfolder'
 
 - script: hg clone http://code.nsnam.org/ns-3-dev/
-  displayName: 'Clone ns-3'
+  displayName: 'Clone latest ns-3'
 
 - script: |
     mv helics ns-3-dev/contrib
     cd ns-3-dev
-    ./waf configure --disable-werror
+    ./waf configure --disable-werror --with-helics=/usr/local --enable-modules=helics --enable-examples --enable-tests
   displayName: 'Configure ns-3'
 
 - script: |
     cd ns-3-dev
     ./waf build
   displayName: 'Build ns-3'
-
-- script: echo $PWD
-  displayName: 'Check pwd after another inline script executes'
