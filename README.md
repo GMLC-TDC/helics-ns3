@@ -2,7 +2,7 @@
 
 helics-ns3 is an [ns-3](https://www.nsnam.org/) module for coupling network simulations with other simulators using [HELICS](https://www.helics.org/).
 
-## Installation
+## Prerequisites
 
 Install a recent 1.x version of [HELICS](https://github.com/GMLC-TDC/HELICS-src).
 
@@ -16,6 +16,8 @@ Git:
 ```bash
 git clone https://github.com/nsnam/ns-3-dev-git
 ```
+
+## Installation
 
 Clone a copy of this repository into a folder named `helics` in the ns-3 `contrib` directory. The module directory name *must* be helics, otherwise the ns-3 build system will be confused.
 
