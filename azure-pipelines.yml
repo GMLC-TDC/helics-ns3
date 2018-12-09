@@ -21,7 +21,7 @@ steps:
     cd HELICS-src
     mkdir build
     cd build
-    cmake ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF
+    cmake -GNinja ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF
     ninja
     ninja install
   displayName: 'Install HELICS'
