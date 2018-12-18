@@ -49,7 +49,7 @@ public:
 
   std::string GetDestination (void) const;
 
-  virtual void DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message) override;
+  virtual void DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message) override;
 
 protected:
   virtual void DoDispose (void) override;

@@ -5,7 +5,7 @@
 namespace ns3 {
 
 std::shared_ptr<helics::MessageFederate> helics_federate;
-helics::endpoint_id_t helics_endpoint;
+helics::Endpoint helics_endpoint;
 
 std::ostream& operator << (std::ostream& stream, const helics::Message &message)
 {

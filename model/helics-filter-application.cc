@@ -66,9 +66,9 @@ HelicsFilterApplication::StopApplication (void)
 }
 
 void
-HelicsFilterApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
+HelicsFilterApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.value() << time << *message);
+  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
 
   Send (message->original_dest, std::make_unique<helics::Message> (*message));
 }
@@ -76,7 +76,7 @@ HelicsFilterApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time
 void
 HelicsFilterApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << *message);
+  NS_LOG_FUNCTION (this << message->to_string());
 
   std::swap(message->dest, message->original_dest);
   helics_federate->sendMessage (helics_endpoint, std::move (message));

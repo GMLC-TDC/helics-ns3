@@ -50,29 +50,31 @@ int main (int argc, char *argv[])
     {
         dstEndpoint = vm["endpoint2"].as<std::string>();
     }
-    helics::FederateInfo fi(myname);
+//    helics::FederateInfo fi(myname);
+    helics::FederateInfo fi {};
     fi.loadInfoFromArgs(argc, argv);
     //fi.logLevel = 5;
-    fi.timeDelta = helics::loadTimeFromString("1s");
+//    fi.timeDelta = helics::loadTimeFromString("1s");
+    fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1s"));
     std::shared_ptr<helics::Broker> brk;
     if (vm.count("startbroker") > 0)
     {
         brk = helics::BrokerFactory::create(fi.coreType, vm["startbroker"].as<std::string>());
     }
 
-    auto mFed = std::make_unique<helics::MessageFederate> (fi);
+    auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
     std::cout << " registering endpoint '" << srcEndpoint << "' for " << name<<'\n';
-    auto idsource = mFed->registerEndpoint(srcEndpoint, "");
+    auto &idsource = mFed->registerEndpoint(srcEndpoint, "");
     std::cout << " registering endpoint '" << dstEndpoint << "' for " << name<<'\n';
     // avoid err/warn about assigned but not used
     //auto iddestination = mFed->registerEndpoint(dstEndpoint, "");
     (void)mFed->registerEndpoint(dstEndpoint, "");
 
     std::cout << "entering init State\n";
-    mFed->enterInitializationState ();
+    mFed->enterInitializingMode ();
     std::cout << "entered init State\n";
-    mFed->enterExecutionState ();
+    mFed->enterExecutingMode ();
     std::cout << "entered exec State\n";
     for (int i=1; i<10; ++i) {
         std::string message = "message sent from "+name+"/"+srcEndpoint+" to "+name+"/"+dstEndpoint+" at time " + std::to_string(i);

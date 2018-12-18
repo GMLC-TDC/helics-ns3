@@ -61,28 +61,29 @@ int main (int argc, char *argv[])
     {
         mydestination = vm["destination"].as<std::string>();
     }
-    helics::FederateInfo fi(myname);
+    helics::FederateInfo fi {};
     fi.loadInfoFromArgs(argc, argv);
-    fi.logLevel = 5;
+//    fi.logLevel = 5;
+    fi.setProperty(helics_property_int_log_level, 5);
     std::shared_ptr<helics::Broker> brk;
     if (vm.count("startbroker") > 0)
     {
         brk = helics::BrokerFactory::create(fi.coreType, vm["startbroker"].as<std::string>());
     }
 
-    auto mFed = std::make_unique<helics::MessageFederate> (fi);
+    auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
     std::cout << " registering endpoint '" << mysource << "' for " << name<<'\n';
-    auto idsource = mFed->registerEndpoint(mysource, "");
+    auto &idsource = mFed->registerEndpoint(mysource, "");
     std::cout << " registering endpoint '" << mydestination << "' for " << name<<'\n';
     // avoid err/warn about assigned but not used
     //auto iddestination = mFed->registerEndpoint(mydestination, "");
     (void)mFed->registerEndpoint(mydestination, "");
 
     std::cout << "entering init State\n";
-    mFed->enterInitializationState ();
+    mFed->enterInitializingMode ();
     std::cout << "entered init State\n";
-    mFed->enterExecutionState ();
+    mFed->enterExecutingMode ();
     std::cout << "entered exec State\n";
     for (int i=1; i<10; ++i) {
         std::string message = "message sent from "+name+"/"+mysource+" to "+target+" at time " + std::to_string(i);

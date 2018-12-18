@@ -30,19 +30,19 @@ HelicsHelper::HelicsHelper()
 }
 
 void
-HelicsHelper::SetupFederate(void)
-{
-  helics::FederateInfo fi (name);
-  fi.coreType = helics::coreTypeFromString (core);
-  //fi.timeDelta = timedelta;
-  fi.timeDelta = helics::loadTimeFromString ("1ns");
-  if (!coreinit.empty()) {
-    fi.coreInitString = coreinit;
-  }
-  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+HelicsHelper::SetupFederate(void) {
+    helics::FederateInfo fi{};
+    fi.coreType = helics::coreTypeFromString(core);
+    //fi.timeDelta = timedelta;
+//    fi.timeDelta = helics::loadTimeFromString("1ns"),
+    fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1ns"));
+    if (!coreinit.empty()) {
+        fi.coreInitString = coreinit;
+    }
+    helics_federate = std::make_shared<helics::MessageFederate>(name, fi);
 }
 
-// Recognized args:
+// Recognized args: FIXME: some of these no longer seem to work.
 // broker - address of the broker to connect
 // name - name of the federate
 // corename - name of the core to create or find
@@ -62,14 +62,14 @@ void
 HelicsHelper::SetupFederate(int argc, const char *const *argv)
 {
   helics::FederateInfo fi (argc, argv);
-  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+  helics_federate = std::make_shared<helics::MessageFederate> (name, fi);
 }
 
 void
 HelicsHelper::SetupFederate(std::string &jsonString)
 {
   helics::FederateInfo fi = helics::loadFederateInfo (jsonString);
-  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+  helics_federate = std::make_shared<helics::MessageFederate> (name, fi);
 }
 
 void

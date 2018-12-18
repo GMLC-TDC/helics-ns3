@@ -92,15 +92,15 @@ HelicsStaticSourceApplication::StopApplication (void)
 void
 HelicsStaticSourceApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << *message);
+  NS_LOG_FUNCTION (this << message->to_string());
 
   NS_FATAL_ERROR ("HelicsStaticSourceApplication should not filter messages");
 }
 
 void
-HelicsStaticSourceApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
+HelicsStaticSourceApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.value() << time << *message);
+  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
 
   NS_FATAL_ERROR ("HelicsStaticSourceApplication should not receive endpoint events");
 }
@@ -108,7 +108,7 @@ HelicsStaticSourceApplication::DoEndpoint (helics::endpoint_id_t id, helics::Tim
 void
 HelicsStaticSourceApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << *message);
+  NS_LOG_FUNCTION (this << message->to_string());
 
   NS_LOG_INFO ("sending message on to " << m_destination);
 
