@@ -26,7 +26,7 @@ steps:
     sudo ninja install
   displayName: 'Install HELICS'
 
-- script: hg clone http://code.nsnam.org/ns-3-dev/
+- script: git clone https://gitlab.com/nsnam/ns-3-dev.git
   displayName: 'Clone latest ns-3'
 
 - script: |
