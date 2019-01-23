@@ -50,11 +50,9 @@ int main (int argc, char *argv[])
     {
         dstEndpoint = vm["endpoint2"].as<std::string>();
     }
-//    helics::FederateInfo fi(myname);
+
     helics::FederateInfo fi {};
     fi.loadInfoFromArgs(argc, argv);
-    //fi.logLevel = 5;
-//    fi.timeDelta = helics::loadTimeFromString("1s");
     fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1s"));
     std::shared_ptr<helics::Broker> brk;
     if (vm.count("startbroker") > 0)
@@ -67,8 +65,6 @@ int main (int argc, char *argv[])
     std::cout << " registering endpoint '" << srcEndpoint << "' for " << name<<'\n';
     auto &idsource = mFed->registerEndpoint(srcEndpoint, "");
     std::cout << " registering endpoint '" << dstEndpoint << "' for " << name<<'\n';
-    // avoid err/warn about assigned but not used
-    //auto iddestination = mFed->registerEndpoint(dstEndpoint, "");
     (void)mFed->registerEndpoint(dstEndpoint, "");
 
     std::cout << "entering init State\n";

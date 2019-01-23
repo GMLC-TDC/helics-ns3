@@ -63,7 +63,6 @@ int main (int argc, char *argv[])
     }
     helics::FederateInfo fi {};
     fi.loadInfoFromArgs(argc, argv);
-//    fi.logLevel = 5;
     fi.setProperty(helics_property_int_log_level, 5);
     std::shared_ptr<helics::Broker> brk;
     if (vm.count("startbroker") > 0)
@@ -76,8 +75,6 @@ int main (int argc, char *argv[])
     std::cout << " registering endpoint '" << mysource << "' for " << name<<'\n';
     auto &idsource = mFed->registerEndpoint(mysource, "");
     std::cout << " registering endpoint '" << mydestination << "' for " << name<<'\n';
-    // avoid err/warn about assigned but not used
-    //auto iddestination = mFed->registerEndpoint(mydestination, "");
     (void)mFed->registerEndpoint(mydestination, "");
 
     std::cout << "entering init State\n";

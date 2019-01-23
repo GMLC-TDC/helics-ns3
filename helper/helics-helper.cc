@@ -33,8 +33,6 @@ void
 HelicsHelper::SetupFederate(void) {
     helics::FederateInfo fi{};
     fi.coreType = helics::coreTypeFromString(core);
-    //fi.timeDelta = timedelta;
-//    fi.timeDelta = helics::loadTimeFromString("1ns"),
     fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1ns"));
     if (!coreinit.empty()) {
         fi.coreInitString = coreinit;

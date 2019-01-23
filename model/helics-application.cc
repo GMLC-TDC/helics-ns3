@@ -286,7 +286,6 @@ HelicsApplication::NewTag ()
 void 
 HelicsApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-//  NS_LOG_FUNCTION (this << message->to_string());
   NS_LOG_FUNCTION (this << message->to_string());
 }
  
@@ -355,8 +354,6 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
         << address.GetPort()
         << "' uid '"
         << p->GetUid () <<"'");
-    //m_socket->SendTo(p, 0, address);
-    //Simulator::Schedule(NanoSeconds (delay_ns), &Socket::SendTo, m_socket, buffer_ptr, p->GetSize(), 0, address); //non-virtual method
     int (Socket::*fp)(Ptr<Packet>, uint32_t, const Address&) = &Socket::SendTo;
     Simulator::Schedule(NanoSeconds (delay_ns), fp, m_socket, p, 0, address); //virtual method
   }
@@ -388,8 +385,6 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
         << address.GetPort()
         << "' uid '"
         << p->GetUid () <<"'");
-    //m_socket->SendTo(p, 0, address);
-    //Simulator::Schedule(NanoSeconds (delay_ns), &Socket::SendTo, m_socket, buffer_ptr, p->GetSize(), 0, address); //non-virtual method
     int (Socket::*fp)(Ptr<Packet>, uint32_t, const Address&) = &Socket::SendTo;
     Simulator::Schedule(NanoSeconds (delay_ns), fp, m_socket, p, 0, address); //virtual method
   }
