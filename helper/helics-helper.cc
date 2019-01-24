@@ -40,17 +40,17 @@ HelicsHelper::SetupFederate(void) {
     helics_federate = std::make_shared<helics::MessageFederate>(name, fi);
 }
 
-// Recognized args: FIXME: some of these no longer seem to work.
+// Some of the recognized args:
 // broker - address of the broker to connect
 // name - name of the federate
 // corename - name of the core to create or find
-// core - type of core to connect to
+// coretype - type of core to connect to
 // offset - offset of time steps
 // period - period of the federate
 // timedelta - the time delta of the federate
 // coreinit - the core initialization string
-// inputdelay
-// outputdelay
+// inputdelay - delay on incoming communication to the federate
+// outputdelay - delay on outgoing communication from the federate
 // flags - named flag for the federate
 
 // Some default values:
@@ -84,7 +84,7 @@ HelicsHelper::SetupCommandLine(CommandLine &cmd)
 {
   cmd.AddValue ("broker", "address to connect the broker to", broker);
   cmd.AddValue ("name", "name of the ns3 federate", name);
-  cmd.AddValue ("core", "name of the core to connect to", core);
+  cmd.AddValue ("corename", "name of the core to connect to", core);
   cmd.AddValue ("timedelta", "the time delta of the federate", timedelta);
   cmd.AddValue ("coreinit", "the core initializion string", coreinit);
 }
