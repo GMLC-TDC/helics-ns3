@@ -30,29 +30,27 @@ HelicsHelper::HelicsHelper()
 }
 
 void
-HelicsHelper::SetupFederate(void)
-{
-  helics::FederateInfo fi (name);
-  fi.coreType = helics::coreTypeFromString (core);
-  //fi.timeDelta = timedelta;
-  fi.timeDelta = helics::loadTimeFromString ("1ns");
-  if (!coreinit.empty()) {
-    fi.coreInitString = coreinit;
-  }
-  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+HelicsHelper::SetupFederate(void) {
+    helics::FederateInfo fi{};
+    fi.coreType = helics::coreTypeFromString(core);
+    fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1ns"));
+    if (!coreinit.empty()) {
+        fi.coreInitString = coreinit;
+    }
+    helics_federate = std::make_shared<helics::MessageFederate>(name, fi);
 }
 
-// Recognized args:
+// Some of the recognized args:
 // broker - address of the broker to connect
 // name - name of the federate
 // corename - name of the core to create or find
-// core - type of core to connect to
+// coretype - type of core to connect to
 // offset - offset of time steps
 // period - period of the federate
 // timedelta - the time delta of the federate
 // coreinit - the core initialization string
-// inputdelay
-// outputdelay
+// inputdelay - delay on incoming communication to the federate
+// outputdelay - delay on outgoing communication from the federate
 // flags - named flag for the federate
 
 // Some default values:
@@ -62,14 +60,14 @@ void
 HelicsHelper::SetupFederate(int argc, const char *const *argv)
 {
   helics::FederateInfo fi (argc, argv);
-  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+  helics_federate = std::make_shared<helics::MessageFederate> (name, fi);
 }
 
 void
 HelicsHelper::SetupFederate(std::string &jsonString)
 {
   helics::FederateInfo fi = helics::loadFederateInfo (jsonString);
-  helics_federate = std::make_shared<helics::MessageFederate> (fi);
+  helics_federate = std::make_shared<helics::MessageFederate> (name, fi);
 }
 
 void
@@ -86,7 +84,7 @@ HelicsHelper::SetupCommandLine(CommandLine &cmd)
 {
   cmd.AddValue ("broker", "address to connect the broker to", broker);
   cmd.AddValue ("name", "name of the ns3 federate", name);
-  cmd.AddValue ("core", "name of the core to connect to", core);
+  cmd.AddValue ("corename", "name of the core to connect to", core);
   cmd.AddValue ("timedelta", "the time delta of the federate", timedelta);
   cmd.AddValue ("coreinit", "the core initializion string", coreinit);
 }

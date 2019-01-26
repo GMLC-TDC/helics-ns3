@@ -139,7 +139,7 @@ void
 HelicsApplication::SetFilterName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
-  m_filter_id = helics_federate->registerSourceFilter ("ns3_"+name, name);
+  m_filter_id = helics_federate->registerFilter ("ns3_"+name, name);
   m_filterOp = std::make_shared<helics::MessageDestOperator> ([this](const std::string &src, const std::string &dest)
       {
           if (boost::starts_with(src, helics_federate->getName())) {
@@ -168,9 +168,9 @@ HelicsApplication::SetEndpointName (const std::string &name, bool is_global)
   }
   using std::placeholders::_1;
   using std::placeholders::_2;
-  std::function<void(helics::endpoint_id_t,helics::Time)> func;
+  std::function<void(helics::Endpoint,helics::Time)> func;
   func = std::bind (&HelicsApplication::EndpointCallback, this, _1, _2);
-  helics_federate->registerEndpointCallback(m_endpoint_id, func);
+  helics_federate->setMessageNotificationCallback(m_endpoint_id, func);
 }
 
 void
@@ -286,13 +286,13 @@ HelicsApplication::NewTag ()
 void 
 HelicsApplication::DoFilter (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << *message);
+  NS_LOG_FUNCTION (this << message->to_string());
 }
  
 void 
 HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << dest << *message);
+  NS_LOG_FUNCTION (this << dest << message->to_string());
  
   Ptr<Packet> p;
 
@@ -354,8 +354,6 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
         << address.GetPort()
         << "' uid '"
         << p->GetUid () <<"'");
-    //m_socket->SendTo(p, 0, address);
-    //Simulator::Schedule(NanoSeconds (delay_ns), &Socket::SendTo, m_socket, buffer_ptr, p->GetSize(), 0, address); //non-virtual method
     int (Socket::*fp)(Ptr<Packet>, uint32_t, const Address&) = &Socket::SendTo;
     Simulator::Schedule(NanoSeconds (delay_ns), fp, m_socket, p, 0, address); //virtual method
   }
@@ -387,8 +385,6 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
         << address.GetPort()
         << "' uid '"
         << p->GetUid () <<"'");
-    //m_socket->SendTo(p, 0, address);
-    //Simulator::Schedule(NanoSeconds (delay_ns), &Socket::SendTo, m_socket, buffer_ptr, p->GetSize(), 0, address); //non-virtual method
     int (Socket::*fp)(Ptr<Packet>, uint32_t, const Address&) = &Socket::SendTo;
     Simulator::Schedule(NanoSeconds (delay_ns), fp, m_socket, p, 0, address); //virtual method
   }
@@ -405,24 +401,24 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
 }
 
 void 
-HelicsApplication::EndpointCallback (helics::endpoint_id_t id, helics::Time time)
+HelicsApplication::EndpointCallback (helics::Endpoint id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << m_name << id.value() << time);
+  NS_LOG_FUNCTION (this << m_name << id.getHandle() << time);
   DoEndpoint (id, time);
 }
  
 void 
-HelicsApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time)
+HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << id.value() << time);
+  NS_LOG_FUNCTION (this << id.getHandle() << time);
   auto message = helics_federate->getMessage(id);
   DoEndpoint (id, time, std::move (message));
 }
  
 void 
-HelicsApplication::DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message)
+HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.value() << time << *message);
+  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
 }
 
 InetSocketAddress HelicsApplication::GetLocalInet (void) const
@@ -541,7 +537,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
 void
 HelicsApplication::DoRead (std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << *message);
+  NS_LOG_FUNCTION (this << message->to_string());
 }
 
 } // Namespace ns3

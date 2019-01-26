@@ -6,7 +6,7 @@ helics-ns3 is an [ns-3](https://www.nsnam.org/) module for coupling network simu
 
 ## Prerequisites
 
-Install a recent 1.x version of [HELICS](https://github.com/GMLC-TDC/HELICS-src).
+Install a recent 2.x version of [HELICS](https://github.com/GMLC-TDC/HELICS-src).
 
 Get a copy of the latest development version of ns-3 from their GitLab repository. (With older ns-3 versions from 3.28 through Dec 6, 2018 [post 3.29] a bug with finding Boost libraries will prevent the HELICS module from working)
 

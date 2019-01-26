@@ -77,10 +77,10 @@ public:
   virtual void SetScheduler (ObjectFactory schedulerFactory);
   virtual uint32_t GetSystemId (void) const; 
   virtual uint32_t GetContext (void) const;
-  virtual uint64_t GetEventCount (void) const;;
+  virtual uint64_t GetEventCount (void) const;
 
 
-  virtual Time Next (void) const;
+    virtual Time Next (void) const;
 
 private:
   virtual void DoDispose (void);
@@ -128,8 +128,6 @@ private:
   uint64_t m_currentTs;
   /** Execution context of the current event. */
   uint32_t m_currentContext;
-  /** The event count. */
-  uint64_t m_eventCount;
   /**
    * Number of events that have been inserted but not yet scheduled,
    *  not counting the Destroy events; this is used for validation

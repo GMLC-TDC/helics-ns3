@@ -53,11 +53,10 @@ NS_OBJECT_ENSURE_REGISTERED (HelicsSimulatorImpl);
 TypeId
 HelicsSimulatorImpl::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::HelicsSimulatorImpl")
-    .SetParent<SimulatorImpl> ()
-    .SetGroupName ("Core")
-    .AddConstructor<HelicsSimulatorImpl> ()
-  ;
+  static TypeId tid = TypeId ("ns3::HelicsSimulatorImpl");
+    tid.SetParent<SimulatorImpl>();
+    tid.SetGroupName("Core");
+    tid.AddConstructor<HelicsSimulatorImpl>();
   return tid;
 }
 
@@ -85,7 +84,6 @@ HelicsSimulatorImpl::HelicsSimulatorImpl ()
   m_currentTs = 0;
   m_currentContext = Simulator::NO_CONTEXT;
   m_unscheduledEvents = 0;
-  m_eventCount = 0;
   m_eventsWithContextEmpty = true;
   m_main = SystemThread::Self();
 }
@@ -148,7 +146,7 @@ uint32_t
 HelicsSimulatorImpl::GetSystemId (void) const
 {
   // Return HELICS federate ID
-  return helics_federate->getID ();
+  return helics_federate->getID().baseValue();
 }
 
 void
@@ -159,7 +157,6 @@ HelicsSimulatorImpl::ProcessOneEvent (void)
 
   NS_ASSERT (next.key.m_ts >= m_currentTs);
   m_unscheduledEvents--;
-  m_eventCount++;
 
   NS_LOG_LOGIC ("handle " << next.key.m_ts);
   m_currentTs = next.key.m_ts;
@@ -232,7 +229,7 @@ HelicsSimulatorImpl::Run (void)
 
   // Begin HELICS simulation
   NS_LOG_INFO ("Entering execution state");
-  helics_federate->enterExecutionState ();
+  helics_federate->enterExecutingMode ();
 
   double requested;
   helics::Time granted;
@@ -500,7 +497,7 @@ HelicsSimulatorImpl::GetContext (void) const
 uint64_t
 HelicsSimulatorImpl::GetEventCount (void) const
 {
-  return m_eventCount;
+  return m_eventsWithContext.size();
 }
 
 } // namespace ns3

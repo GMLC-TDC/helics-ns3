@@ -94,18 +94,18 @@ public:
    *
    * This function is called internally by HELICS.
    */
-  void EndpointCallback (helics::endpoint_id_t id, helics::Time time);
+  void EndpointCallback (helics::Endpoint id, helics::Time time);
 
 protected:
   virtual void DoDispose (void);
   virtual void StartApplication (void);
   virtual void StopApplication (void);
   virtual void DoFilter (std::unique_ptr<helics::Message> message);
-  virtual void DoEndpoint (helics::endpoint_id_t id, helics::Time time);
-  virtual void DoEndpoint (helics::endpoint_id_t id, helics::Time time, std::unique_ptr<helics::Message> message);
+  virtual void DoEndpoint (helics::Endpoint id, helics::Time time);
+  virtual void DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message);
   virtual void DoRead (std::unique_ptr<helics::Message> message);
 
-  helics::endpoint_id_t m_endpoint_id;
+  helics::Endpoint m_endpoint_id;
 
 private:
   /**
@@ -136,7 +136,7 @@ private:
   TracedCallback<Ptr<const Packet> > m_txTrace;
 
   uint32_t m_next_tag_id;
-  helics::filter_id_t m_filter_id;
+  helics::Filter m_filter_id;
   std::map<uint32_t,std::unique_ptr<helics::Message> > m_messages;
 
   std::shared_ptr<helics::MessageDestOperator> m_filterOp; //!< the filter operator for this application
