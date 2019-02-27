@@ -32,6 +32,7 @@ HelicsHelper::HelicsHelper()
 void
 HelicsHelper::SetupFederate(void) {
     helics::FederateInfo fi{};
+    fi.broker = broker;
     fi.coreType = helics::coreTypeFromString(core);
     fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1ns"));
     if (!coreinit.empty()) {
