@@ -85,7 +85,7 @@ HelicsHelper::SetupCommandLine(CommandLine &cmd)
 {
   cmd.AddValue ("broker", "address to connect the broker to", broker);
   cmd.AddValue ("name", "name of the ns3 federate", name);
-  cmd.AddValue ("corename", "name of the core to connect to", core);
+  cmd.AddValue ("coretype", "type of core to connect to", core);
   cmd.AddValue ("timedelta", "the time delta of the federate", timedelta);
   cmd.AddValue ("coreinit", "the core initializion string", coreinit);
 }
