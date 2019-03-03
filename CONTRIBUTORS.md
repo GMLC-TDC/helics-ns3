@@ -8,6 +8,9 @@ If you would like to contribute to the HELICS ns-3 module project see [CONTRIBUT
  - Marc Eberlein*
  - Trevor Hardy*
 
+### National Renewable Energy Lab
+ - Jianhua Zhang
+
 ### Lawrence Livermore National Lab
  - Ryan Mast*
 
@@ -17,4 +20,4 @@ If you would like to contribute to the HELICS ns-3 module project see [CONTRIBUT
 ## Used Libraries or Code
 
 ### [ns-3](https://gitlab.com/nsnam/ns-3-dev)
-The HELICS ns-3 module requires ns-3 to work. In addition, a number of files were originally from the ns-3 source code, with modifications to add HELICS support. ns-3 is licensed under the GPLv2 license.
+The HELICS ns-3 module requires ns-3 to work. In addition, a number of files were originally from the ns-3 source code, with modifications to add HELICS support. ns-3 is licensed under the [GPLv2](https://gitlab.com/nsnam/ns-3-dev/blob/master/LICENSE) license.
