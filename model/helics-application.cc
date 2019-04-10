@@ -329,7 +329,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   if (Ipv4Address::IsMatchingType (m_localAddress))
   {
     InetSocketAddress address = to->GetLocalInet();
-    if (~f_name.empty())
+    if (!f_name.empty())
     {
       std::ofstream outFile(f_name.c_str(), std::ios::app);
       outFile << Simulator::Now ().GetNanoSeconds ()  << ","
@@ -360,7 +360,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   else if (Ipv6Address::IsMatchingType (m_localAddress))
   {
     Inet6SocketAddress address = to->GetLocalInet6();
-    if (~f_name.empty())
+    if (!f_name.empty())
     {
       std::ofstream outFile(f_name.c_str(), std::ios::app);
       outFile << Simulator::Now ().GetNanoSeconds ()  << ","
@@ -469,7 +469,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
 
       if (InetSocketAddress::IsMatchingType (from))
       {
-        if (~f_name.empty())
+        if (!f_name.empty())
         {
           std::ofstream outFile(f_name.c_str(), std::ios::app);
           outFile << Simulator::Now ().GetNanoSeconds ()  << ","
@@ -498,7 +498,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
       }
       else if (Inet6SocketAddress::IsMatchingType (from))
       {
-        if (~f_name.empty())
+        if (!f_name.empty())
         {
           std::ofstream outFile(f_name.c_str(), std::ios::app);
           outFile << Simulator::Now ().GetNanoSeconds ()  << ","
