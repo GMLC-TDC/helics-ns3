@@ -17,6 +17,9 @@ steps:
   displayName: 'Apt install required Boost and ZeroMQ libraries'
 
 - script: |
+    ls /usr/local/share/boost/1.69.0
+    ls /usr/local
+    ls /usr/local/boost
     git clone https://github.com/GMLC-TDC/HELICS-src
     cd HELICS-src
     mkdir build
