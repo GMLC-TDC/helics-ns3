@@ -17,6 +17,7 @@ steps:
   displayName: 'Apt install required Boost and ZeroMQ libraries'
 
 - script: |
+    cmake --version
     git clone https://github.com/GMLC-TDC/HELICS-src
     cd HELICS-src
     mkdir build
