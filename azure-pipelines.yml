@@ -20,6 +20,7 @@ steps:
     cmake --version
     git clone https://github.com/GMLC-TDC/HELICS-src
     cd HELICS-src
+    git checkout develop
     mkdir build
     cd build
     cmake -GNinja ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF
