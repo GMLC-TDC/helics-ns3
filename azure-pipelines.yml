@@ -22,7 +22,7 @@ steps:
     cd HELICS-src
     mkdir build
     cd build
-    cmake -GNinja ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF -DBOOST_LIBRARYDIR=/usr/local/share/boost/1.69.0
+    cmake -GNinja ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF
     ninja
     sudo ninja install
   displayName: 'Install HELICS'
