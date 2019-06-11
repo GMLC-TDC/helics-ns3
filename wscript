@@ -78,7 +78,7 @@ int main()
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'include')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'include/helics'))
         ]
-    conf.env['STLIBPATH_HELICS'] = [
+    conf.env['LIBPATH_HELICS'] = [
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'build', 'default')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib')),
@@ -92,10 +92,10 @@ int main()
     print retval
     if retval:
         conf.env['HELICS'] = retval
-        conf.env.append_value('STLIB_HELICS', ['helics-static', 'jsoncpp'])
+        conf.env.append_value('LIB_HELICS', ['helics-static'])
     else:
         conf.env['HELICS'] = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
-        conf.env.append_value('STLIB_HELICS', ['helics-staticd', 'jsoncppd'])
+        conf.env.append_value('LIB_HELICS', ['helics-staticd'])
 
     conf.report_optional_feature("helics", "HELICS Integration", conf.env['HELICS'], "HELICS library not found")
 
