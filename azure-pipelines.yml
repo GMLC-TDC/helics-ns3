@@ -15,7 +15,8 @@ steps:
 
 - script: |
     sudo apt-get install -y  libzmq5-dev ninja-build
-  displayName: 'Apt install required Boost and ZeroMQ libraries'
+  # Boost is pre-installed on Azure
+  displayName: 'Apt install required ZeroMQ libraries'
 
 - script: |
     cmake --version

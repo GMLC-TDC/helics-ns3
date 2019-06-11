@@ -2,13 +2,13 @@
 
 [![Build Status](https://dev.azure.com/HELICS-test/helics-ns3/_apis/build/status/GMLC-TDC.helics-ns3?branchName=master)](https://dev.azure.com/HELICS-test/helics-ns3/_build/latest?definitionId=1?branchName=master)
 
-helics-ns3 is an [ns-3](https://www.nsnam.org/) module for coupling network simulations with other simulators using [HELICS](https://www.helics.org/).
+[helics-ns3](https://github.com/GMLC-TDC/helics-ns3) is an [ns-3](https://www.nsnam.org/) module for coupling network simulations with other simulators using [HELICS](https://www.helics.org/).
 
 ## Prerequisites
 
-Install a recent 2.x version of [HELICS](https://github.com/GMLC-TDC/HELICS-src).
+Install version 2.1+ of [HELICS](https://github.com/GMLC-TDC/HELICS-src); if building from source, be sure to set the CMake variable `JSONCPP_OBJLIB=ON` .
 
-Get a copy of the latest development version of ns-3 from their GitLab repository. (With older ns-3 versions from 3.28 through Dec 6, 2018 [post 3.29] a bug with finding Boost libraries will prevent the HELICS module from working)
+Get a recent copy of ns-3, ideally from their GitLab repository.
 
 Git:
 ```bash
@@ -24,7 +24,7 @@ cd ns-3-dev/
 git clone https://github.com/GMLC-TDC/helics-ns3 contrib/helics
 ```
 
-Run `./waf configure` with the `--disable-werror` option, and set the `--with-helics` option to the path of your HELICS installation. To enable examples or tests use `--enable-examples` or `--enable-tests`, respectively. If the system copy of Boost was not used to build HELICS (or there are several versions of Boost installed), then use the `--boost-includes` and `--boost-libs` options to tell waf where the copy of Boost to use is located. If ZMQ is not found, `--with-zmq` can be used to specify where it is installed. Paths should be absolute.
+Run `./waf configure` with the `--disable-werror` option, and set the `--with-helics` option to the path of your HELICS installation. To enable examples or tests use `--enable-examples` or `--enable-tests`, respectively. If ZMQ is not found, `--with-zmq` can be used to specify where it is installed. Paths should be absolute.
 
 After configuration is done, run `./waf build` to compile ns-3 with the HELICS module.
 
