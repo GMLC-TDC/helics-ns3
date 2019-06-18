@@ -2,7 +2,7 @@
   <modules>
     <module name="helics">
       <source type="git">
-        <attribute name="url" value="https://github.com/GMLC-TDC/HELICS-src.git"/>
+        <attribute name="url" value="https://github.com/GMLC-TDC/HELICS.git"/>
         <attribute name="module_directory" value="helics"/>
       </source>
       <build type="cmake" objdir="yes">
