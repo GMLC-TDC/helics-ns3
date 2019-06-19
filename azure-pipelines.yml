@@ -20,8 +20,8 @@ steps:
 
 - script: |
     cmake --version
-    git clone https://github.com/GMLC-TDC/HELICS-src
-    cd HELICS-src
+    git clone https://github.com/GMLC-TDC/HELICS
+    cd HELICS
     git checkout develop
     git submodule update --init --recursive
     mkdir build
