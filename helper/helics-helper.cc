@@ -58,7 +58,7 @@ HelicsHelper::SetupFederate(void) {
 // timeDelta = timeEpsilon (minimum time advance allowed by federate)
 // outputDelay, inputDelay, period, offset = timeZero
 void
-HelicsHelper::SetupFederate(int argc, const char *const *argv)
+HelicsHelper::SetupFederate(int argc, char **argv)
 {
   helics::FederateInfo fi (argc, argv);
   helics_federate = std::make_shared<helics::MessageFederate> (name, fi);

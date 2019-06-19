@@ -19,8 +19,6 @@
 #include <fstream>
 #include <vector>
 
-#include <boost/algorithm/string/predicate.hpp>
-
 #include "ns3/log.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/ipv6-address.h"
@@ -142,13 +140,14 @@ HelicsApplication::SetFilterName (const std::string &name)
   m_filter_id = helics_federate->registerFilter ("ns3_"+name, name);
   m_filterOp = std::make_shared<helics::MessageDestOperator> ([this](const std::string &src, const std::string &dest)
       {
-          if (boost::starts_with(src, helics_federate->getName())) {
+          const std::string &fedName = helics_federate->getName();
+          if (src.substr(0, fedName.size()) == fedName) {
               NS_LOG_INFO ("skipping rename, sent to self: " << src);
               return dest;
           }
           else {
               NS_LOG_INFO ("renaming: " << src);
-              return helics_federate->getName() + '/' + src;
+              return fedName + '/' + src;
           }
       });
   helics_federate->setFilterOperator (m_filter_id, m_filterOp);
