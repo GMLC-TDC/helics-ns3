@@ -78,7 +78,7 @@ int main()
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'include')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'include/helics'))
         ]
-    conf.env['LIBPATH_HELICS'] = [
+    conf.env['STLIBPATH_HELICS'] = [
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'build', 'default')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib')),
