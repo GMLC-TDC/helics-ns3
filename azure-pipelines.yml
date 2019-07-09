@@ -1,43 +1,111 @@
-trigger:
-- master
-- develop
+jobs:
+- job: Native
+  strategy:
+    matrix:
+      Linux:
+        imageName: "ubuntu-16.04"
+      macOS:
+        imageName: "macos-10.14"
+  pool:
+    vmImage: $(imageName)
 
-pool:
-  vmImage: 'Ubuntu-16.04'
+  steps:
+  # -----------------------
+  # Move the helics-ns3
+  # files into subfolder
+  # -----------------------
+  - script: |
+      shopt -s extglob dotglob
+      mkdir helics
+      mv !(helics) helics
+      shopt -u dotglob
+    displayName: 'Move helics-ns3 module files into subfolder'
 
-steps:
-- script: |
-    shopt -s extglob dotglob
-    mkdir helics
-    mv !(helics) helics
-    shopt -u dotglob
-  displayName: 'Move helics-ns3 module files into subfolder'
+  # -----------------------
+  # Install dependencies
+  # -----------------------
+  # Linux
+  - bash: |
+      sudo apt-get install -y libzmq5-dev ninja-build
+    condition: eq( variables['Agent.OS'], 'Linux' )
+    displayName: Linux - Install ZeroMQ and Ninja
+  # macOS
+  - bash: |
+      brew install zeromq ninja boost
+    condition: eq( variables['Agent.OS'], 'Darwin' )
+    displayName: macOS - Install Boost, ZeroMQ, and Ninja
+  # -----------------------
+  # Checkout HELICS
+  # -----------------------
+  - bash: |
+      cmake --version
+      git clone https://github.com/GMLC-TDC/HELICS HELICS-dependency
+      cd HELICS-dependency
+      git checkout ${HELICS_COMMITISH:-develop}
+      if [[ "${HELICS_PR_TARGET}" != "" ]]; then
+        git config --global user.email "helicsbot@helics.org"
+        git config --global user.name "HELICS-bot"
+        git merge --no-commit --no-ff origin/${HELICS_PR_TARGET} || exit $?
+      fi
+      git submodule update --init --recursive
+    displayName: Checkout HELICS
+  # -----------------------
+  # Configure HELICS
+  # -----------------------
+  # Linux, macOS
+  - task: CMake@1
+    inputs:
+      workingDirectory: HELICS-dependency/build
+      cmakeArgs: -GNinja -DCMAKE_BUILD_TYPE=Release -DJSONCPP_OBJLIB=ON -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF ..
+    displayName: 'Linux/macOS - Configure HELICS'
+    condition: ne( variables['Agent.OS'], 'Windows_NT' )
+  # -----------------------
+  # Install HELICS
+  # -----------------------
+  - bash: |
+      if [ -x "$(command -v sudo)" ]; then
+        sudo cmake --build . --target install
+      else
+        cmake --build . --target install
+      fi
+    displayName: 'Install HELICS'
+    workingDirectory: HELICS-dependency/build
 
-- script: |
-    sudo apt-get install -y libboost-dev libboost-signals-dev libboost-test-dev libboost-program-options-dev libboost-filesystem-dev libboost-system-dev libboost-date-time-dev libboost-timer-dev libboost-chrono-dev libzmq5-dev ninja-build
-  displayName: 'Apt install required Boost and ZeroMQ libraries'
+  # -----------------------
+  # Clone upstream ns-3
+  # -----------------------
+  - script: git clone https://gitlab.com/nsnam/ns-3-dev.git
+    displayName: 'Clone latest ns-3'
 
-- script: |
-    git clone https://github.com/GMLC-TDC/HELICS-src
-    cd HELICS-src
-    mkdir build
-    cd build
-    cmake -GNinja ../ -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF
-    ninja
-    sudo ninja install
-  displayName: 'Install HELICS'
+  # -----------------------
+  # Configure ns-3
+  # -----------------------
+  - script: |
+      mv helics ns-3-dev/contrib
+      cd ns-3-dev
+      ./waf configure --disable-werror --with-helics=/usr/local --enable-modules=helics --enable-examples --enable-tests | tee azure_waf_configure.log
+      ! grep -Fq "HELICS not enabled" azure_waf_configure.log
+    displayName: 'Configure ns-3'
 
-- script: git clone https://gitlab.com/nsnam/ns-3-dev.git
-  displayName: 'Clone latest ns-3'
+  # -----------------------
+  # Build ns-3
+  # -----------------------
+  - script: |
+      cd ns-3-dev
+      ./waf build
+    displayName: 'Build ns-3'
 
-- script: |
-    mv helics ns-3-dev/contrib
-    cd ns-3-dev
-    ./waf configure --disable-werror --with-helics=/usr/local --enable-modules=helics --enable-examples --enable-tests | tee azure_waf_configure.log
-    ! grep -Fq "HELICS not enabled" azure_waf_configure.log
-  displayName: 'Configure ns-3'
-
-- script: |
-    cd ns-3-dev
-    ./waf build
-  displayName: 'Build ns-3'
+# -----------------------
+# Report Upstream PR
+# -----------------------
+- job: Report_Results
+  displayName: Report Results
+  dependsOn: Native
+  condition: and(succeededOrFailed(), variables['HELICS_PR_TARGET'], variables['HELICS_PR_SLUG'], variables['HELICS_PR_NUM'])
+  variables:
+    PR_STATUS_REPORT: $[ dependencies.Native.result ]
+  steps:
+  - bash: |
+      .ci/report-results.sh
+    env:
+      HELICSBOT_GH_TOKEN: $(HELICSBot.GH.Token)
