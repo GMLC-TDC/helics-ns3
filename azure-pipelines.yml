@@ -56,7 +56,7 @@ jobs:
   - task: CMake@1
     inputs:
       workingDirectory: HELICS-dependency/build
-      cmakeArgs: -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF ..
+      cmakeArgs: -GNinja -DCMAKE_BUILD_TYPE=Release -DJSONCPP_OBJLIB=ON -DBUILD_HELICS_TESTS=OFF -DBUILD_HELICS_EXAMPLES=OFF ..
     displayName: 'Linux/macOS - Configure HELICS'
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
   # -----------------------
