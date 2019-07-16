@@ -1,10 +1,10 @@
 #!/bin/bash
 case ${PR_STATUS_REPORT} in
     *Succeeded*)
-        BUILD_MESSAGE=":tada: **HELICS-Examples** integration test passed: [[build log]](https://dev.azure.com/HELICS-test/HELICS-Examples/_build/results?buildId=${BUILD_BUILDID}) [[commit]](https://github.com/GMLC-TDC/HELICS/commit/${HELICS_COMMITISH})"
+        BUILD_MESSAGE=":tada: **helics-ns3** integration test passed: [[build log]](https://dev.azure.com/HELICS-test/helics-ns3/_build/results?buildId=${BUILD_BUILDID}) [[commit]](https://github.com/GMLC-TDC/HELICS/commit/${HELICS_COMMITISH})"
     ;;
     *Failed*)
-        BUILD_MESSAGE=":confused: **HELICS-Examples** integration test had some problems: [[build log]](https://dev.azure.com/HELICS-test/HELICS-Examples/_build/results?buildId=${BUILD_BUILDID})  [[commit]](https://github.com/GMLC-TDC/HELICS/commit/${HELICS_COMMITISH})"
+        BUILD_MESSAGE=":confused: **helics-ns3** integration test had some problems: [[build log]](https://dev.azure.com/HELICS-test/helics-ns3/_build/results?buildId=${BUILD_BUILDID})  [[commit]](https://github.com/GMLC-TDC/HELICS/commit/${HELICS_COMMITISH})"
     ;;
 esac
 
