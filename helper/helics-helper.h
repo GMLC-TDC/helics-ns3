@@ -24,6 +24,7 @@ public:
   void SetupFederate (std::vector<std::string> &args);
   void SetupFederate (std::string &jsonString);
   void SetupApplicationFederate (void);
+  void SetupApplicationFederate (std::string configFileName);
   void SetupCommandLine (CommandLine &cmd);
 
   ApplicationContainer InstallFilter (Ptr<Node> node, const std::string &name) const;

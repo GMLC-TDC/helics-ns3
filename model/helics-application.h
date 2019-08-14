@@ -55,6 +55,12 @@ public:
    */
   void SetFilterName (const std::string &name);
   /**
+   * \create the filter application with an existing filter and endpoint
+   * \param filterInstance the instance of the helics filter object
+   * \param epInstance the instance of the helics endpoint object
+   */
+  void SetupFilterApplication (const helics::Filter &filterInstance, const helics::Endpoint &epInstance);
+  /**
    * \brief set the named of this endpoint
    * \param name name
    */
