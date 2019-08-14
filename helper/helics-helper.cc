@@ -81,6 +81,13 @@ HelicsHelper::SetupApplicationFederate(void)
 }
 
 void
+HelicsHelper::SetupApplicationFederate(std::string &configFileName)
+{
+	helics_federate = std::make_shared<helics::MessageFederate> (configFileName);
+	GlobalValue::Bind ("SimulatorImplementationType", StringValue ("ns3::HelicsSimulatorImpl"));
+}
+
+void
 HelicsHelper::SetupCommandLine(CommandLine &cmd)
 {
   cmd.AddValue ("broker", "address to connect the broker to", broker);
