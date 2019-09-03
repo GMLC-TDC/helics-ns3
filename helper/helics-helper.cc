@@ -92,7 +92,7 @@ HelicsHelper::SetupApplicationFederate(void)
 }
 
 void
-HelicsHelper::SetupApplicationFederate(std::string &configFileName)
+HelicsHelper::SetupApplicationFederateWithConfig(std::string &configFileName)
 {
 	helics_federate = std::make_shared<helics::MessageFederate> (configFileName);
 	GlobalValue::Bind ("SimulatorImplementationType", StringValue ("ns3::HelicsSimulatorImpl"));
@@ -124,6 +124,25 @@ HelicsHelper::InstallFilter (Ptr<Node> node, const std::string &name) const
     node->AddApplication (app);
     apps.Add (app);
     return apps;
+}
+
+ApplicationContainer
+HelicsHelper::InstallEndpoint (Ptr<Node> node, helics::Endpoint &ep) const
+{
+  ApplicationContainer apps;
+  Ptr<HelicsFilterApplication> app = m_factory_filter.Create<HelicsFilterApplication> ();
+  if (!app) {
+      NS_FATAL_ERROR ("Failed to create HelicsFilterApplication");
+    }
+
+  app->SetEndpoint (ep);
+  Ptr<Ipv4> net = node->GetObject<Ipv4>();
+  Ipv4InterfaceAddress interface_address = net->GetAddress(1,0);
+  Ipv4Address address = interface_address.GetLocal();
+  app->SetLocal(address, 1234);
+  node->AddApplication (app);
+  apps.Add (app);
+  return apps;
 }
 
 ApplicationContainer

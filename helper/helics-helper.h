@@ -19,15 +19,19 @@ namespace ns3 {
 class HelicsHelper {
 public:
   HelicsHelper ();
+
+  std::shared_ptr<helics::MessageFederate> helics_federate;
+
   void SetupFederate (void);
   void SetupFederate (int argc, char **argv);
   void SetupFederate (std::vector<std::string> &args);
   void SetupFederate (std::string &jsonString);
   void SetupApplicationFederate (void);
-  void SetupApplicationFederate (std::string configFileName);
+  void SetupApplicationFederateWithConfig (std::string &configFileName);
   void SetupCommandLine (CommandLine &cmd);
 
   ApplicationContainer InstallFilter (Ptr<Node> node, const std::string &name) const;
+  ApplicationContainer InstallEndpoint (Ptr<Node> node, helics::Endpoint &ep) const;
 
   ApplicationContainer InstallStaticSink (Ptr<Node> node, const std::string &name, const std::string &destination, bool is_global=false) const;
   ApplicationContainer InstallGlobalStaticSink (Ptr<Node> node, const std::string &name, const std::string &destination) const { return InstallStaticSink (node, name, destination, true); }
