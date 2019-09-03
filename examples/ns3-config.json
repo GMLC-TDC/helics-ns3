@@ -1,0 +1,34 @@
+{
+  "name":"filterFed",
+  "coretype":"zmq",
+  "endpoints":[
+    {
+      "name":"fed1/endpoint1"
+    },
+    {
+      "name":"fed2/endpoint1"
+    }
+  ],
+  "filters":[
+    {
+      "name":"filter1",
+      "sourcetargets":["fed1/endpoint1"],
+      "operation":"reroute",
+      "properties":
+      {
+        "name":"newdestination",
+        "value":"filterFed/fed1/endpoint1"
+      }
+    },
+    {
+      "name":"filter2",
+      "sourcetargets":["fed2/endpoint1"],
+      "operation":"reroute",
+      "properties":
+      {
+        "name":"newdestination",
+        "value":"filterFed/fed2/endpoint1"
+      }
+    }
+  ]
+}

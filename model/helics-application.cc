@@ -173,6 +173,17 @@ HelicsApplication::SetEndpointName (const std::string &name, bool is_global)
 }
 
 void
+HelicsApplication::SetEndpoint (helics::Endpoint &ep) {
+  SetName(ep.getName ());
+  using std::placeholders::_1;
+  using std::placeholders::_2;
+  std::function<void(helics::Endpoint,helics::Time)> func;
+  func = std::bind (&HelicsApplication::EndpointCallback, this, _1, _2);
+  m_endpoint_id = ep;
+  helics_federate->setMessageNotificationCallback(ep, func);
+}
+
+void
 HelicsApplication::SetName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
