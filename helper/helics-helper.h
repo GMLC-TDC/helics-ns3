@@ -20,8 +20,6 @@ class HelicsHelper {
 public:
   HelicsHelper ();
 
-  //std::shared_ptr<helics::MessageFederate> helics_federate;
-
   void SetupFederate (void);
   void SetupFederate (int argc, char **argv);
   void SetupFederate (std::vector<std::string> &args);

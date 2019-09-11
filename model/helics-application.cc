@@ -138,6 +138,7 @@ void HelicsApplication::SetupFilterApplication (const helics::Filter &filterInst
 	  NS_LOG_FUNCTION (this << epInstance.getName());
 	  m_filter_id = filterInstance;
 	  m_endpoint_id = epInstance;
+	  SetName(epInstance.getName());
 	  std::function<void(helics::Endpoint,helics::Time)> func = std::bind (&HelicsApplication::EndpointCallback, this, std::placeholders::_1, std::placeholders::_2);
 	  helics_federate->setMessageNotificationCallback(m_endpoint_id, func);
 }
