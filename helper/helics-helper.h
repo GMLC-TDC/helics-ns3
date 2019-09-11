@@ -20,7 +20,7 @@ class HelicsHelper {
 public:
   HelicsHelper ();
 
-  std::shared_ptr<helics::MessageFederate> helics_federate;
+  //std::shared_ptr<helics::MessageFederate> helics_federate;
 
   void SetupFederate (void);
   void SetupFederate (int argc, char **argv);
@@ -31,6 +31,7 @@ public:
   void SetupCommandLine (CommandLine &cmd);
 
   ApplicationContainer InstallFilter (Ptr<Node> node, const std::string &name) const;
+  ApplicationContainer InstallFilter (Ptr<Node> node, helics::Filter &fil, helics::Endpoint &ep) const;
   ApplicationContainer InstallEndpoint (Ptr<Node> node, helics::Endpoint &ep) const;
 
   ApplicationContainer InstallStaticSink (Ptr<Node> node, const std::string &name, const std::string &destination, bool is_global=false) const;
