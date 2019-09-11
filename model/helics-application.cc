@@ -200,9 +200,9 @@ HelicsApplication::SetName (const std::string &name)
   std::string fedName = helics_federate->getName();
   size_t pos = name.find(fedName);
   if(pos != std::string::npos) {
-	  name.erase(pos, fedName.length()+1);
+	  m_name.erase(pos, fedName.length()+1);
   }
-  Names::Add (SanitizeName (name), this);
+  Names::Add (SanitizeName (m_name), this);
 }
 
 std::string
