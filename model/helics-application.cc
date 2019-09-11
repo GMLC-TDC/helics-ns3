@@ -133,6 +133,15 @@ HelicsApplication::~HelicsApplication()
   m_socket = 0;
 }
 
+void HelicsApplication::SetupFilterApplication (const helics::Filter &filterInstance, const helics::Endpoint &epInstance)
+{
+	  NS_LOG_FUNCTION (this << epInstance.getName());
+	  m_filter_id = filterInstance;
+	  m_endpoint_id = epInstance;
+	  std::function<void(helics::Endpoint,helics::Time)> func = std::bind (&HelicsApplication::EndpointCallback, this, std::placeholders::_1, std::placeholders::_2);
+	  helics_federate->setMessageNotificationCallback(m_endpoint_id, func);
+}
+
 void
 HelicsApplication::SetFilterName (const std::string &name)
 {
@@ -188,7 +197,12 @@ HelicsApplication::SetName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
   m_name = name;
-  Names::Add (SanitizeName ("helics_"+name), this);
+  std::string fedName = helics_federate->getName();
+  size_t pos = name.find(fedName);
+  if(pos != std::string::npos) {
+	  name.erase(pos, fedName.length()+1);
+  }
+  Names::Add (SanitizeName (name), this);
 }
 
 std::string
@@ -307,7 +321,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   Ptr<Packet> p;
 
   // Find the HelicsApplication for the destination.
-  Ptr<HelicsApplication> to = Names::Find<HelicsApplication>(SanitizeName ("helics_"+dest));
+  Ptr<HelicsApplication> to = Names::Find<HelicsApplication>(SanitizeName (dest));
   if (!to) {
     NS_FATAL_ERROR("failed HelicsApplication lookup to '" << dest << "'");
   }

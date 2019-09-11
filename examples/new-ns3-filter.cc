@@ -56,7 +56,7 @@ main (int argc, char *argv[])
 
 
   // TODO: query federate for info
-  std::cout << helicsHelper.helics_federate.getName() << std::endl;
+  std::cout << helicsHelper.helics_federate->getName() << std::endl;
 
 //  InternetStackHelper stack;
 //  stack.Install (p2pNodes.Get (0));
