@@ -24,6 +24,10 @@
 
 #include "ns3/helics-helper.h"
 
+#include <chrono>
+#include <thread>
+#include <vector>
+
 // Default Network Topology
 //
 //       10.1.1.0
@@ -47,39 +51,75 @@ NS_LOG_COMPONENT_DEFINE ("HelicsExample");
 int 
 main (int argc, char *argv[])
 {
-  std::string config = argv[0];
+  std::cout << "number of args: " << argc << std::endl;
+  std::string config = argv[1];
 
-  std::cout << config << std::endl;
+  std::cout << "Helics configuration file: " << config.c_str() << std::endl;
   HelicsHelper helicsHelper;
-
+  std::cout << "Calling Calling Message Federate Constructor" << std::endl;
   helicsHelper.SetupApplicationFederateWithConfig(config);
-
-
+  std::cout << "Getting Federate information" << std::endl;
   // TODO: query federate for info
-  std::cout << helicsHelper.helics_federate->getName() << std::endl;
+  std::string fedName = helics_federate->getName();
+  std::cout << "Federate name: " << helics_federate->getName().c_str() << std::endl;
+  int ep_count = helics_federate->getEndpointCount();
+  for(int i=0; i < ep_count; i++){
+	  helics::Endpoint ep = helics_federate->getEndpoint(i);
+	  std::string epName = ep.getName();
+	  std::string ep_info = ep.getInfo();
+	  size_t pos = epName.find(fedName);
+	  if(pos != std::string::npos) {
+		  epName.erase(pos, fedName.length()+1);
+	  }
+	  std::cout << "Endpoint name: " << epName << std::endl;
+  }
+  uint32_t nCsma = 3;
+  nCsma = nCsma == 0 ? 1 : nCsma;
 
-//  InternetStackHelper stack;
-//  stack.Install (p2pNodes.Get (0));
-//  stack.Install (csmaNodes);
-//
-//  Ipv4AddressHelper address;
-//  address.SetBase ("10.1.1.0", "255.255.255.0");
-//  Ipv4InterfaceContainer p2pInterfaces;
-//  p2pInterfaces = address.Assign (p2pDevices);
-//
-//  address.SetBase ("10.1.2.0", "255.255.255.0");
-//  Ipv4InterfaceContainer csmaInterfaces;
-//  csmaInterfaces = address.Assign (csmaDevices);
-//
-//  ApplicationContainer apps1 = helicsHelper.InstallFilter (
-//          csmaNodes.Get (nCsma), endpoint1);
-//  apps1.Start (Seconds (0.0));
-//  apps1.Stop (Seconds (10.0));
-//
-//  ApplicationContainer apps2 = helicsHelper.InstallFilter (
-//          p2pNodes.Get (0), endpoint2);
-//  apps2.Start (Seconds (0.0));
-//  apps2.Stop (Seconds (10.0));
+	NodeContainer p2pNodes;
+	p2pNodes.Create (2);
+
+	NodeContainer csmaNodes;
+	csmaNodes.Add (p2pNodes.Get (1));
+	csmaNodes.Create (nCsma);
+
+	PointToPointHelper pointToPoint;
+	pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("5Mbps"));
+	pointToPoint.SetChannelAttribute ("Delay", StringValue ("2ms"));
+
+	NetDeviceContainer p2pDevices;
+	p2pDevices = pointToPoint.Install (p2pNodes);
+
+	CsmaHelper csma;
+	csma.SetChannelAttribute ("DataRate", StringValue ("100Mbps"));
+	csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (6560)));
+
+	NetDeviceContainer csmaDevices;
+	csmaDevices = csma.Install (csmaNodes);
+  
+  InternetStackHelper stack;
+  stack.Install (p2pNodes.Get (0));
+  stack.Install (csmaNodes);
+
+  Ipv4AddressHelper address;
+  address.SetBase ("10.1.1.0", "255.255.255.0");
+  Ipv4InterfaceContainer p2pInterfaces;
+  p2pInterfaces = address.Assign (p2pDevices);
+
+  address.SetBase ("10.1.2.0", "255.255.255.0");
+  Ipv4InterfaceContainer csmaInterfaces;
+  csmaInterfaces = address.Assign (csmaDevices);
+
+
+  ApplicationContainer apps1 = helicsHelper.InstallFilter (
+		  csmaNodes.Get (nCsma), helics_federate->getFilter(0), helics_federate->getEndpoint(0));
+  apps1.Start (Seconds (0.0));
+  apps1.Stop (Seconds (10.0));
+
+  ApplicationContainer apps2 = helicsHelper.InstallFilter (
+          p2pNodes.Get (0), helics_federate->getFilter(1), helics_federate->getEndpoint(1));
+  apps2.Start (Seconds (0.0));
+  apps2.Stop (Seconds (10.0));
 //
 //  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 //
