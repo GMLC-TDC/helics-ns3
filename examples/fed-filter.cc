@@ -19,7 +19,6 @@
 #include <thread>
 #include <stdexcept>
 #include "helics/core/helicsCLI11.hpp"
-#include "helics/core/BrokerFactory.hpp"
 #include "helics/core/helicsVersion.hpp"
 
 int main (int argc, char *argv[])
@@ -28,12 +27,10 @@ int main (int argc, char *argv[])
     std::string myname = "fed";
     std::string srcEndpoint = "endpoint1";
     std::string dstEndpoint = "endpoint2";
-    std::string brokerArgs = "";
 
     app.add_option ("--name,-n", myname, "name of this federate");
     app.add_option ("--endpoint1,--source,-s", srcEndpoint, "name of the source endpoint");
     app.add_option ("--endpoint2,--dest,-d", dstEndpoint, "name of the destination endpoint");
-    app.add_option ("--startbroker", brokerArgs, "start a broker with the specified arguments");
 
     auto ret = app.helics_parse (argc, argv);
 
@@ -50,11 +47,6 @@ int main (int argc, char *argv[])
     fi.defName = "filterFedNS3";
     fi.loadInfoFromArgs(argc, argv);
     fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1s"));
-    std::shared_ptr<helics::Broker> brk;
-    if (app["--startbroker"]->count () > 0)
-    {
-        brk = helics::BrokerFactory::create(fi.coreType, brokerArgs);
-    }
 
     auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
@@ -83,13 +75,5 @@ int main (int argc, char *argv[])
 
     }
     mFed->finalize ();
-    if (brk)
-    {
-        while (brk->isConnected())
-        {
-            std::this_thread::yield();
-        }
-        brk = nullptr;
-    }
     return 0;
 }
