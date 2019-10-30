@@ -84,7 +84,6 @@ jobs:
   - script: |
       mv helics ns-3-dev/contrib
       cd ns-3-dev
-      ls src/internet/test/
       ./waf configure --disable-werror --with-helics=/usr/local --enable-modules=helics --enable-examples --enable-tests | tee azure_waf_configure.log
       ! grep -Fq "HELICS not enabled" azure_waf_configure.log
     displayName: 'Configure ns-3'
