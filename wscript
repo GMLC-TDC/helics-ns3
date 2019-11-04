@@ -80,22 +80,42 @@ int main()
         ]
     conf.env['LIBPATH_HELICS'] = [
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'build', 'default')),
-            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
-            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64'))
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64', 'helics'))
         ]
+    conf.env['RPATH_HELICS'] = [
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64', 'helics'))
+    ]
 
     conf.env['DEFINES_HELICS'] = ['NS3_HELICS']
 
-    retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-static', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+    # Check for helics-shared library
+    retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-shared', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
     if retval:
         conf.env['HELICS'] = retval
-        conf.env.append_value('LIB_HELICS', ['helics-static'])
-
+        conf.env.append_value('LIB_HELICS', ['helics-shared'])
     else:
-        conf.env['HELICS'] = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
-        conf.env.append_value('LIB_HELICS', ['helics-staticd'])
+        # Check for debug variant of helics-shared library
+        retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-sharedd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+        if retval:
+            conf.env['HELICS'] = retval
+            conf.env.append_value('LIB_HELICS', ['helics-sharedd'])
+        else:
+            # Fall-back to support pre-2.3 versions of HELICS
+            # Look for helics-static library
+            retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-static', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+            if retval:
+                conf.env['HELICS'] = retval
+                conf.env.append_value('LIB_HELICS', ['helics-static'])
+            else:
+                # Check for debug variant of helics-static library
+                retval = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+                conf.env.append_value('LIB_HELICS', ['helics-staticd'])
         
     conf.env.append_value('INCLUDES', conf.env['INCLUDES_HELICS'])
 
