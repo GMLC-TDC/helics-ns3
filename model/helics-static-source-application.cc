@@ -100,7 +100,7 @@ HelicsStaticSourceApplication::DoFilter (std::unique_ptr<helics::Message> messag
 void
 HelicsStaticSourceApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
+  NS_LOG_FUNCTION (this << id.getName() << time << message->to_string());
 
   NS_FATAL_ERROR ("HelicsStaticSourceApplication should not receive endpoint events");
 }

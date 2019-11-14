@@ -19,7 +19,6 @@
 #include <thread>
 #include <stdexcept>
 #include "helics/core/helicsCLI11.hpp"
-#include "helics/core/BrokerFactory.hpp"
 #include "helics/core/helicsVersion.hpp"
 
 int main (int argc, char *argv[])
@@ -30,14 +29,12 @@ int main (int argc, char *argv[])
     std::string targetEndpoint = "endpoint1";
     std::string mysource = "endpoint1";
     std::string mydestination = "endpoint2";
-    std::string brokerArgs = "";
 
     app.add_option ("--name,-n", myname, "name of this federate");
     app.add_option ("--target,-t", targetFederate, "name of the target federate");
     app.add_option ("--endpoint,-e", targetEndpoint, "name of the target endpoint");
     app.add_option ("--source,-s", mysource, "name of the source endpoint");
     app.add_option ("--destination,-d", mydestination, "name of the destination endpoint");
-    app.add_option ("--startbroker", brokerArgs, "start a broker with the specified arguments");
 
     auto ret = app.helics_parse (argc, argv);
 
@@ -55,11 +52,6 @@ int main (int argc, char *argv[])
     std::string target = targetFederate + "/" + targetEndpoint;
     fi.loadInfoFromArgs(argc, argv);
     fi.setProperty(helics_property_int_log_level, 5);
-    std::shared_ptr<helics::Broker> brk;
-    if (app["--startbroker"]->count () > 0)
-    {
-        brk = helics::BrokerFactory::create(fi.coreType, brokerArgs);
-    }
 
     auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
@@ -87,13 +79,5 @@ int main (int argc, char *argv[])
 
     }
     mFed->finalize ();
-    if (brk)
-    {
-        while (brk->isConnected())
-        {
-            std::this_thread::yield();
-        }
-        brk = nullptr;
-    }
     return 0;
 }

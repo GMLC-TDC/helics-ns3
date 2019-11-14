@@ -68,7 +68,7 @@ HelicsFilterApplication::StopApplication (void)
 void
 HelicsFilterApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
+  NS_LOG_FUNCTION (this << id.getName() << time << message->to_string());
 
   Send (message->original_dest, std::make_unique<helics::Message> (*message));
 }

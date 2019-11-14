@@ -402,14 +402,14 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
 void 
 HelicsApplication::EndpointCallback (helics::Endpoint id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << m_name << id.getHandle() << time);
+  NS_LOG_FUNCTION (this << m_name << id.getName() << time);
   DoEndpoint (id, time);
 }
  
 void 
 HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << id.getHandle() << time);
+  NS_LOG_FUNCTION (this << id.getName() << time);
   auto message = helics_federate->getMessage(id);
   DoEndpoint (id, time, std::move (message));
 }
@@ -417,7 +417,7 @@ HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time)
 void 
 HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
+  NS_LOG_FUNCTION (this << id.getName() << time << message->to_string());
 }
 
 InetSocketAddress HelicsApplication::GetLocalInet (void) const
