@@ -19,8 +19,6 @@
 #include <fstream>
 #include <vector>
 
-#include <boost/algorithm/string/predicate.hpp>
-
 #include "ns3/log.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/ipv6-address.h"
@@ -142,13 +140,14 @@ HelicsApplication::SetFilterName (const std::string &name)
   m_filter_id = helics_federate->registerFilter ("ns3_"+name, name);
   m_filterOp = std::make_shared<helics::MessageDestOperator> ([this](const std::string &src, const std::string &dest)
       {
-          if (boost::starts_with(src, helics_federate->getName())) {
+          const std::string &fedName = helics_federate->getName();
+          if (src.substr(0, fedName.size()) == fedName) {
               NS_LOG_INFO ("skipping rename, sent to self: " << src);
               return dest;
           }
           else {
               NS_LOG_INFO ("renaming: " << src);
-              return helics_federate->getName() + '/' + src;
+              return fedName + '/' + src;
           }
       });
   helics_federate->setFilterOperator (m_filter_id, m_filterOp);
@@ -329,7 +328,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   if (Ipv4Address::IsMatchingType (m_localAddress))
   {
     InetSocketAddress address = to->GetLocalInet();
-    if (~f_name.empty())
+    if (!f_name.empty())
     {
       std::ofstream outFile(f_name.c_str(), std::ios::app);
       outFile << Simulator::Now ().GetNanoSeconds ()  << ","
@@ -360,7 +359,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   else if (Ipv6Address::IsMatchingType (m_localAddress))
   {
     Inet6SocketAddress address = to->GetLocalInet6();
-    if (~f_name.empty())
+    if (!f_name.empty())
     {
       std::ofstream outFile(f_name.c_str(), std::ios::app);
       outFile << Simulator::Now ().GetNanoSeconds ()  << ","
@@ -403,14 +402,14 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
 void 
 HelicsApplication::EndpointCallback (helics::Endpoint id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << m_name << id.getHandle() << time);
+  NS_LOG_FUNCTION (this << m_name << id.getName() << time);
   DoEndpoint (id, time);
 }
  
 void 
 HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time)
 {
-  NS_LOG_FUNCTION (this << id.getHandle() << time);
+  NS_LOG_FUNCTION (this << id.getName() << time);
   auto message = helics_federate->getMessage(id);
   DoEndpoint (id, time, std::move (message));
 }
@@ -418,7 +417,7 @@ HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time)
 void 
 HelicsApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << id.getHandle() << time << message->to_string());
+  NS_LOG_FUNCTION (this << id.getName() << time << message->to_string());
 }
 
 InetSocketAddress HelicsApplication::GetLocalInet (void) const
@@ -469,7 +468,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
 
       if (InetSocketAddress::IsMatchingType (from))
       {
-        if (~f_name.empty())
+        if (!f_name.empty())
         {
           std::ofstream outFile(f_name.c_str(), std::ios::app);
           outFile << Simulator::Now ().GetNanoSeconds ()  << ","
@@ -498,7 +497,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
       }
       else if (Inet6SocketAddress::IsMatchingType (from))
       {
-        if (~f_name.empty())
+        if (!f_name.empty())
         {
           std::ofstream outFile(f_name.c_str(), std::ios::app);
           outFile << Simulator::Now ().GetNanoSeconds ()  << ","

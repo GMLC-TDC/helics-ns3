@@ -14,47 +14,35 @@ SPDX-License-Identifier: BSD-3-Clause
 #include <set>
 #include <thread>
 #include <stdexcept>
-#include <boost/filesystem.hpp>
-#include <boost/program_options.hpp>
-#include "helics/core/BrokerFactory.hpp"
+#include "helics/core/helicsCLI11.hpp"
 #include "helics/core/helicsVersion.hpp"
-
-namespace po = boost::program_options;
-namespace filesystem = boost::filesystem;
-
-static bool argumentParser (int argc, const char * const *argv, po::variables_map &vm_map);
-
 
 int main (int argc, char *argv[])
 {
-    po::variables_map vm;
-    if (argumentParser (argc, argv, vm)) {
-        return 0;
-    }
-
+    helics::helicsCLI11App app ("Filter Fed NS3 Example", "FilterFedNS3Example");
     std::string myname = "fed";
-    if (vm.count("name") > 0)
-    {
-        myname = vm["name"].as<std::string>();
-    }
     std::string srcEndpoint = "endpoint1";
-    if (vm.count("endpoint1") > 0) {
-        srcEndpoint = vm["endpoint1"].as<std::string>();
-    }
     std::string dstEndpoint = "endpoint2";
-    if (vm.count("endpoint2") > 0)
-    {
-        dstEndpoint = vm["endpoint2"].as<std::string>();
-    }
+
+    app.add_option ("--name,-n", myname, "name of this federate");
+    app.add_option ("--endpoint1,--source,-s", srcEndpoint, "name of the source endpoint");
+    app.add_option ("--endpoint2,--dest,-d", dstEndpoint, "name of the destination endpoint");
+
+    auto ret = app.helics_parse (argc, argv);
 
     helics::FederateInfo fi {};
+    if (ret == helics::helicsCLI11App::parse_output::help_call)
+    {
+        fi.loadInfoFromArgs ("--help");
+        return 0;
+    }
+    else if (ret != helics::helicsCLI11App::parse_output::ok)
+    {
+        return -1;
+    }
+    fi.defName = "filterFedNS3";
     fi.loadInfoFromArgs(argc, argv);
     fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1s"));
-    std::shared_ptr<helics::Broker> brk;
-    if (vm.count("startbroker") > 0)
-    {
-        brk = helics::BrokerFactory::create(fi.coreType, vm["startbroker"].as<std::string>());
-    }
 
     auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
@@ -83,63 +71,5 @@ int main (int argc, char *argv[])
 
     }
     mFed->finalize ();
-    if (brk)
-    {
-        while (brk->isConnected())
-        {
-            std::this_thread::yield();
-        }
-        brk = nullptr;
-    }
     return 0;
-}
-
-bool argumentParser (int argc, const char * const *argv, po::variables_map &vm_map)
-{
-    po::options_description opt ("options");
-
-    // clang-format off
-    // input boost controls
-    opt.add_options()
-        ("help,h", "produce help message")
-        ("startbroker", po::value<std::string>(),"start a broker with the specified arguments")
-        ("name,n", po::value<std::string>(), "name of this federate")
-        ("endpoint1,s", po::value<std::string>(), "name of the source endpoint")
-        ("endpoint2,d", po::value<std::string>(), "name of the destination endpoint");
-
-    // clang-format on
-
-    po::variables_map cmd_vm;
-    try
-    {
-        po::store (po::command_line_parser (argc, argv).options (opt).allow_unregistered().run (), cmd_vm);
-    }
-    catch (std::exception &e)
-    {
-        std::cerr << e.what () << std::endl;
-        throw (e);
-    }
-
-    po::notify (cmd_vm);
-
-    // objects/pointers/variables/constants
-
-    // program options control
-    if (cmd_vm.count ("help") > 0)
-    {
-        std::cout << opt << '\n';
-        return true;
-    }
-
-    if (cmd_vm.count ("version") > 0)
-    {
-        std::cout << helics::versionString << '\n';
-        return true;
-    }
-
-    po::store (po::command_line_parser (argc, argv).options (opt).allow_unregistered().run (), vm_map);
-
-    po::notify (vm_map);
-
-    return false;
 }

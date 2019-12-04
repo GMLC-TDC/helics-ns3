@@ -20,7 +20,7 @@ class HelicsHelper {
 public:
   HelicsHelper ();
   void SetupFederate (void);
-  void SetupFederate (int argc, const char *const *argv);
+  void SetupFederate (int argc, char **argv);
   void SetupFederate (std::string &jsonString);
   void SetupApplicationFederate (void);
   void SetupCommandLine (CommandLine &cmd);

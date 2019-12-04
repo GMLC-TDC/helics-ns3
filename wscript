@@ -15,35 +15,7 @@ def options(opt):
                    help=('Path to HELICS for federated simulator integration'),
                    default='', dest='with_helics')
 
-REQUIRED_BOOST_LIBS = ['system', 'filesystem', 'program_options']
-
-def required_boost_libs(conf):
-    conf.env['REQUIRED_BOOST_LIBS'] += REQUIRED_BOOST_LIBS
-
-
 def configure(conf):
-    if not conf.env['LIB_BOOST']:
-        conf.report_optional_feature("helics", "helics integration", False,
-                                     "Required boost libraries not found")
-        return;
-
-    present_boost_libs = []
-    for boost_lib_name in conf.env['LIB_BOOST']:
-        if boost_lib_name.startswith("boost_"):
-            boost_lib_name = boost_lib_name[6:]
-        if boost_lib_name.endswith("-mt"):
-            boost_lib_name = boost_lib_name[:-3]
-        present_boost_libs.append(boost_lib_name)
-
-    missing_boost_libs = [lib for lib in REQUIRED_BOOST_LIBS if lib not in present_boost_libs]
-    if missing_boost_libs != []:
-        conf.report_optional_feature("helics", "helics integration", False,
-                                     "Required boost libraries not found, missing: %s" % ', '.join(missing_boost_libs))
-        # Add this module to the list of modules that won't be built
-        # if they are enabled.
-        conf.env['MODULES_NOT_BUILT'].append('helics')
-        return
-
     if Options.options.with_zmq:
         if os.path.isdir(Options.options.with_zmq):
             conf.msg("Checking for libzmq.so location", ("%s (given)" % Options.options.with_zmq))
@@ -111,21 +83,44 @@ int main()
         ]
     conf.env['LIBPATH_HELICS'] = [
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'build', 'default')),
-            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib')),
             os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
-            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64'))
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64', 'helics'))
         ]
+    conf.env['RPATH_HELICS'] = [
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib', 'helics')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64')),
+            os.path.abspath(os.path.join(conf.env['WITH_HELICS'], 'lib64', 'helics'))
+    ]
 
     conf.env['DEFINES_HELICS'] = ['NS3_HELICS']
 
-    retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-static', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+    # Check for helics-shared library
+    retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-shared', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
     if retval:
         conf.env['HELICS'] = retval
-        conf.env.append_value('LIB_HELICS', 'helics-static')
+        conf.env.append_value('LIB_HELICS', ['helics-shared'])
     else:
-        conf.env['HELICS'] = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
-        conf.env.append_value('LIB_HELICS', 'helics-staticd')
+        # Check for debug variant of helics-shared library
+        retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-sharedd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+        if retval:
+            conf.env['HELICS'] = retval
+            conf.env.append_value('LIB_HELICS', ['helics-sharedd'])
+        else:
+            # Fall-back to support pre-2.3 versions of HELICS
+            # Look for helics-static library
+            retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-static', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+            if retval:
+                conf.env['HELICS'] = retval
+                conf.env.append_value('LIB_HELICS', ['helics-static'])
+            else:
+                # Check for debug variant of helics-static library
+                retval = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+                conf.env.append_value('LIB_HELICS', ['helics-staticd'])
+        
+    conf.env.append_value('INCLUDES', conf.env['INCLUDES_HELICS'])
 
     conf.report_optional_feature("helics", "HELICS Integration", conf.env['HELICS'], "HELICS library not found")
 
@@ -165,7 +160,7 @@ def build(bld):
         ]
 
     if bld.env['ENABLE_HELICS']:
-        module.use.extend(['HELICS', 'BOOST', 'ZMQ'])
+        module.use.extend(['HELICS', 'ZMQ'])
 
     headers = bld(features='ns3header')
     headers.module = 'helics'
