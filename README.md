@@ -6,7 +6,8 @@
 
 ## Prerequisites
 
-Install version 2.1.1+ of [HELICS](https://github.com/GMLC-TDC/HELICS); if building from source, be sure to set the CMake variable `JSONCPP_OBJLIB=ON` .
+Install version 2.1.1+ of [HELICS](https://github.com/GMLC-TDC/HELICS); if building from source, be sure to set the CMake variable `JSONCPP_OBJLIB=ON` and `-DCMAKE_INSTALL_PREFIX=<path to install folder you have access to>`.
+For versions 2.3+,  be sure to set the cmake variables `-DHELICS_BUILD_CXX_SHARED_LIB=ON`.
 
 Get a recent copy of ns-3, ideally from their GitLab repository.
 
