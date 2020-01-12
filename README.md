@@ -17,7 +17,7 @@ git clone https://gitlab.com/nsnam/ns-3-dev.git
 
 ## Installation
 
-Clone a copy of this repository into a folder named `helics` in the ns-3 `contrib` directory. The module directory name *must* be helics, otherwise the ns-3 build system will be confused.
+Clone a copy of this repository into a folder named `helics` in the ns-3 `contrib` directory. The module directory name *must* be `helics`, otherwise the ns-3 build system will be confused.
 
 ```bash
 cd ns-3-dev/
@@ -34,4 +34,12 @@ After configuration is done, run `./waf build` to compile ns-3 with the HELICS m
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.  Please see [CONTRIBUTING](./CONTRIBUTING.md) for some additional notes on licensing of new components and modifications.  
+
+## Release
+The helics-ns3 repository is distributed under the terms of the [GPL-v2](LICENSE) license as required by NS3 since this library derives some code from that code base.
+
+Individual source files that do not require derivation from NS3 are licensed as BSD style.  Any contributions to non-NS3 derived files ideally should be made with BSD markings in the source file.
+At some point in the future if legally allowed or the NS-3 derived components can be removed the repository will be relicensed.  
+
+SPDX-License-Identifier: GPL-v2

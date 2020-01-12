@@ -40,7 +40,7 @@ jobs:
   # -----------------------
   - bash: |
       cmake --version
-      git clone https://github.com/GMLC-TDC/HELICS HELICS-dependency
+      git clone --recursive https://github.com/GMLC-TDC/HELICS HELICS-dependency
       cd HELICS-dependency
       git checkout ${HELICS_COMMITISH:-develop}
       if [[ "${HELICS_PR_TARGET}" != "" ]]; then
