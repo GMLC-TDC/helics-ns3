@@ -487,7 +487,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
       }
 
       // Sanity check that it's the same size.
-      if (item->second->data.size() != size) {
+      if (item->second != nullptr && item->second->data.size() != size) {
           NS_LOG_INFO ("Reading packet but size differs from Message: "
                   << item->second->data.size() << " != " << size);
       }
@@ -555,6 +555,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
       }
 
       DoRead (std::move (item->second));
+      m_messages.erase(item);
 
     }
 }
