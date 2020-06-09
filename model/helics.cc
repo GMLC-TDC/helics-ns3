@@ -9,7 +9,7 @@ SPDX-License-Identifier: BSD-3-Clause
 
 namespace ns3 {
 
-std::shared_ptr<helics::MessageFederate> helics_federate;
+std::shared_ptr<helics::CombinationFederate> helics_federate;
 helics::Endpoint helics_endpoint;
 
 std::ostream& operator << (std::ostream& stream, const helics::Message &message)

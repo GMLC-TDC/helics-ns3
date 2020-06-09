@@ -42,7 +42,7 @@ HelicsHelper::SetupFederate(void) {
     if (!coreinit.empty()) {
         fi.coreInitString = coreinit;
     }
-    helics_federate = std::make_shared<helics::MessageFederate>(name, fi);
+    helics_federate = std::make_shared<helics::CombinationFederate>(name, fi);
 }
 
 // Some of the recognized args:
@@ -65,14 +65,14 @@ void
 HelicsHelper::SetupFederate(int argc, char **argv)
 {
   helics::FederateInfo fi (argc, argv);
-  helics_federate = std::make_shared<helics::MessageFederate> (name, fi);
+  helics_federate = std::make_shared<helics::CombinationFederate> (name, fi);
 }
 
 void
 HelicsHelper::SetupFederate(std::string &jsonString)
 {
   helics::FederateInfo fi = helics::loadFederateInfo (jsonString);
-  helics_federate = std::make_shared<helics::MessageFederate> (name, fi);
+  helics_federate = std::make_shared<helics::CombinationFederate> (name, fi);
 }
 
 void
