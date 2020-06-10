@@ -76,6 +76,13 @@ HelicsHelper::SetupFederate(std::string &jsonString)
 }
 
 void
+HelicsHelper::SetupFederate(std::vector<std::string> &args)
+{
+  helics::FederateInfo fi (args);
+  helics_federate = std::make_shared<helics::CombinationFederate> (name, fi);
+}
+
+void
 HelicsHelper::SetupApplicationFederate(void)
 {
   SetupFederate ();

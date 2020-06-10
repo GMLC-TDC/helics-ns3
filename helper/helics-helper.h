@@ -21,6 +21,7 @@ public:
   HelicsHelper ();
   void SetupFederate (void);
   void SetupFederate (int argc, char **argv);
+  void SetupFederate (std::vector<std::string> &args);
   void SetupFederate (std::string &jsonString);
   void SetupApplicationFederate (void);
   void SetupCommandLine (CommandLine &cmd);

@@ -4,63 +4,65 @@ Copyright (c) 2017-2019, Battelle Memorial Institute; Lawrence Livermore Nationa
 SPDX-License-Identifier: BSD-3-Clause
 */
 
-#include "helics/application_api/ValueFederate.hpp"
-#include "helics/application_api/Inputs.hpp"
-#include <algorithm>
-#include <fstream>
+#include "ns3/helics-helper.h"
 #include <iostream>
-#include <map>
 #include <memory>
-#include <regex>
-#include <set>
-#include <thread>
-#include <stdexcept>
+#include <string>
+#include <vector>
+#include <cstring>
 #include "helics/core/helicsCLI11.hpp"
-#include "helics/core/helicsVersion.hpp"
 
 int main (int argc, char *argv[])
 {
+    using ns3::helics_federate;
     helics::helicsCLI11App app ("PubSub NS3 Example", "PubSubNS3Example");
-    std::string myname = "fed";
     std::string publishKey = "ns3_test_value";
 
-    app.add_option ("--name,-n", myname, "name of this federate");
-    app.add_option ("--key,-k", publishKey, "name of the key to publish on");
+    ns3::CommandLine cmd;
+    ns3::HelicsHelper helicsHelper;
+    cmd.AddValue ("key", "name of the key to publish on", publishKey);
+    helicsHelper.SetupCommandLine (cmd);
 
-    auto ret = app.helics_parse (argc, argv);
-
-    helics::FederateInfo fi {};
-    if (ret == helics::helicsCLI11App::parse_output::help_call)
+    // Manually change the name of the broker so as to not clash with the
+    // default name; but not if the user specified a name
+    bool add_name = true;
+    std::vector<std::string> args;
+    const char* const name_setting = "--name=";
+    const auto name_len = std::strlen(name_setting);
+    for (int i = 0; i < argc; ++i)
     {
-        fi.loadInfoFromArgs ("--help");
-        return 0;
+        if (std::strncmp (argv[i], name_setting, name_len) == 0)
+        {
+            add_name = false;
+        }
+        args.push_back (argv[i]);
     }
-    else if (ret != helics::helicsCLI11App::parse_output::ok)
+    if (add_name)
     {
-        return -1;
+        args.push_back ("--name=fed-pubsub");
     }
 
-    fi.loadInfoFromArgs (argc, argv);
-    fi.setProperty (helics_property_int_log_level, 5);
+    cmd.Parse (args);
+    helicsHelper.SetupFederate (args);
+    helics_federate->setProperty (helics_property_int_log_level, 5);
 
-    auto mFed = std::make_unique<helics::ValueFederate> (myname, fi);
-    const auto name = mFed->getName();
+    const auto name = helics_federate->getName();
     std::cout << " registering publication '" << publishKey << "' for " << name<<'\n';
-    auto &pub = mFed->registerGlobalPublication<std::string> (publishKey);
+    auto &pub = helics_federate->registerGlobalPublication<std::string> (publishKey);
     std::cout << " registering subscription '" << publishKey << "' for " << name<<'\n';
-    auto &sub = mFed->registerSubscription (publishKey);
+    auto &sub = helics_federate->registerSubscription (publishKey);
 
     std::cout << "entering init State\n";
-    mFed->enterInitializingMode ();
+    helics_federate->enterInitializingMode ();
     std::cout << "entered init State\n";
-    mFed->enterExecutingMode ();
+    helics_federate->enterExecutingMode ();
     std::cout << "entered exec State\n";
     for (int i=1; i<10; ++i)
     {
         const std::string message = "publishing message on "+publishKey+" at time " + std::to_string (i);
-        mFed->publish (pub, message);
+        helics_federate->publish (pub, message);
         std::cout << message << std::endl;
-        const auto newTime = mFed->requestTime (i);
+        const auto newTime = helics_federate->requestTime (i);
         std::cout << "processed time " << static_cast<double> (newTime) << "\n";
         while (sub.checkUpdate ())
         {
@@ -69,6 +71,6 @@ int main (int argc, char *argv[])
         }
 
     }
-    mFed->finalize ();
+    helics_federate->finalize ();
     return 0;
 }
