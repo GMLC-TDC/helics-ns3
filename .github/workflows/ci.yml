@@ -10,6 +10,8 @@ jobs:
         os: [macos-latest, ubuntu-latest]
     steps:
       - uses: gmlc-tdc/helics-action/install@main
+        with:
+          version: 'v2'
       - name: Clone latest ns-3
         run: |
           git clone --depth=1 https://gitlab.com/nsnam/ns-3-dev.git .
