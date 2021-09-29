@@ -12,7 +12,7 @@ jobs:
       - uses: gmlc-tdc/helics-action/install@main
       - name: Clone latest ns-3
         run: |
-          git clone --depth=1 git@gitlab.com:nsnam/ns-3-dev.git .
+          git clone --depth=1 https://gitlab.com/nsnam/ns-3-dev.git .
       - uses: actions/checkout@v2
         with:
           path: contrib/helics
