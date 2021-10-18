@@ -62,7 +62,7 @@ public:
   void AddFilter (const std::string &name);
 
   /**
-   * \create the filter application with an existing filter and endpoint
+   * \brief create the filter application with an existing filter and endpoint
    * \param filterInstance the instance of the helics filter object
    * \param epInstance the instance of the helics endpoint object
    */
