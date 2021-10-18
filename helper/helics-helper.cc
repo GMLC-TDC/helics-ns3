@@ -94,7 +94,7 @@ HelicsHelper::SetupApplicationFederate(void)
 void
 HelicsHelper::SetupApplicationFederateWithConfig(std::string &configFileName)
 {
-	helics_federate = std::make_shared<helics::MessageFederate> (configFileName);
+	helics_federate = std::make_shared<helics::CombinationFederate> (configFileName);
 	GlobalValue::Bind ("SimulatorImplementationType", StringValue ("ns3::HelicsSimulatorImpl"));
 }
 
