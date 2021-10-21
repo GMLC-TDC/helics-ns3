@@ -12,7 +12,7 @@ jobs:
       # Install dependencies, then install HELICS from source
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libboost-dev
+        run: sudo apt-get update && sudo apt-get install -y libzmq5-dev libboost-dev
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
         run: brew install zeromq boost
