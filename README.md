@@ -1,6 +1,6 @@
 # helics-ns3
 
-[![Build Status](https://dev.azure.com/HELICS-test/helics-ns3/_apis/build/status/GMLC-TDC.helics-ns3?branchName=master)](https://dev.azure.com/HELICS-test/helics-ns3/_build/latest?definitionId=1?branchName=master)
+[![Build Status](https://github.com/GMLC-TDC/helics-ns3/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/GMLC-TDC/helics-ns3/actions/workflows/ci.yml)
 
 [helics-ns3](https://github.com/GMLC-TDC/helics-ns3) is an [ns-3](https://www.nsnam.org/) module for coupling network simulations with other simulators using [HELICS](https://www.helics.org/).
 
