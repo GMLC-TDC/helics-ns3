@@ -97,29 +97,17 @@ int main()
 
     conf.env['DEFINES_HELICS'] = ['NS3_HELICS']
 
-    # Check for helics-shared library
-    retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-shared', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
-    if retval:
-        conf.env['HELICS'] = retval
-        conf.env.append_value('LIB_HELICS', ['helics-shared'])
-    else:
-        # Check for debug variant of helics-shared library
-        retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-sharedd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
+    # Look for HELICS library
+    # HELICS 2.3+: helics-shared, helics-sharedd
+    # HELICS pre-2.3: helics-static, helics-staticd
+    possible_helics_lib_names = ['helics-shared', 'helics-sharedd', 'helics-static', 'helics-staticd']
+    for try_helics_lib in possible_helics_lib_names:
+        retval = conf.check_nonfatal(fragment=helics_test_code, lib=try_helics_lib, libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
         if retval:
             conf.env['HELICS'] = retval
-            conf.env.append_value('LIB_HELICS', ['helics-sharedd'])
-        else:
-            # Fall-back to support pre-2.3 versions of HELICS
-            # Look for helics-static library
-            retval = conf.check_nonfatal(fragment=helics_test_code, lib='helics-static', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
-            if retval:
-                conf.env['HELICS'] = retval
-                conf.env.append_value('LIB_HELICS', ['helics-static'])
-            else:
-                # Check for debug variant of helics-static library
-                retval = conf.check(fragment=helics_test_code, lib='helics-staticd', libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
-                conf.env.append_value('LIB_HELICS', ['helics-staticd'])
-        
+            conf.env.append_value('LIB_HELICS', [try_helics_lib])
+            break
+
     conf.env.append_value('INCLUDES', conf.env['INCLUDES_HELICS'])
 
     conf.report_optional_feature("helics", "HELICS Integration", conf.env['HELICS'], "HELICS library not found")
