@@ -120,7 +120,7 @@ protected:
   virtual void DoEndpoint (helics::Endpoint id, helics::Time time, std::unique_ptr<helics::Message> message);
   virtual void DoRead (std::unique_ptr<helics::Message> message);
 
-  helics::Endpoint m_endpoint_id;
+  helics::Endpoint m_endpoint;
 
 private:
   /**

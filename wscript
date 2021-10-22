@@ -98,9 +98,8 @@ int main()
     conf.env['DEFINES_HELICS'] = ['NS3_HELICS']
 
     # Look for HELICS library
-    # HELICS 2.3+: helics-shared, helics-sharedd
-    # HELICS pre-2.3: helics-static, helics-staticd
-    possible_helics_lib_names = ['helics-shared', 'helics-sharedd', 'helics-static', 'helics-staticd']
+    # HELICS 3: helicscpp, helicscppd
+    possible_helics_lib_names = ['helicscpp', 'helicscppd']
     for try_helics_lib in possible_helics_lib_names:
         retval = conf.check_nonfatal(fragment=helics_test_code, lib=try_helics_lib, libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
         if retval:

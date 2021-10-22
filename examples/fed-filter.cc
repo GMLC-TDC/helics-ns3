@@ -42,12 +42,12 @@ int main (int argc, char *argv[])
     }
     fi.defName = "filterFedNS3";
     fi.loadInfoFromArgs(argc, argv);
-    fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1s"));
+    fi.setProperty(HELICS_PROPERTY_TIME_DELTA, helics::loadTimeFromString("1s"));
 
     auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
     std::cout << " registering endpoint '" << srcEndpoint << "' for " << name<<'\n';
-    auto &idsource = mFed->registerEndpoint(srcEndpoint, "");
+    auto &sourceEp = mFed->registerEndpoint(srcEndpoint, "");
     std::cout << " registering endpoint '" << dstEndpoint << "' for " << name<<'\n';
     (void)mFed->registerEndpoint(dstEndpoint, "");
 
@@ -58,7 +58,7 @@ int main (int argc, char *argv[])
     std::cout << "entered exec State\n";
     for (int i=1; i<10; ++i) {
         std::string message = "message sent from "+name+"/"+srcEndpoint+" to "+name+"/"+dstEndpoint+" at time " + std::to_string(i);
-        mFed->sendMessage(idsource, name+"/"+dstEndpoint, message.data(), message.size());
+        sourceEp.sendTo(message.data(), message.size(), name+"/"+dstEndpoint);
         std::cout << message << std::endl;
         std::cout << "requesting time " << static_cast<double> (i) << "\n";
         auto newTime = mFed->requestTime (i);

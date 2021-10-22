@@ -85,7 +85,7 @@ HelicsFilterApplication::DoRead (std::unique_ptr<helics::Message> message)
   NS_LOG_FUNCTION (this << message->to_string());
 
   message->dest = message->original_dest;
-  helics_federate->sendMessage (m_endpoint_id, std::move (message));
+  m_endpoint.send (std::move (message));
 }
 
 } // Namespace ns3

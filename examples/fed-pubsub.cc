@@ -44,7 +44,7 @@ int main (int argc, char *argv[])
 
     cmd.Parse (args);
     helicsHelper.SetupFederate (args);
-    helics_federate->setProperty (helics_property_int_log_level, 5);
+    helics_federate->setProperty (HELICS_PROPERTY_INT_LOG_LEVEL, 5);
 
     const auto name = helics_federate->getName();
     std::cout << " registering publication '" << publishKey << "' for " << name<<'\n';
@@ -60,14 +60,14 @@ int main (int argc, char *argv[])
     for (int i=1; i<10; ++i)
     {
         const std::string message = "publishing message on "+publishKey+" at time " + std::to_string (i);
-        helics_federate->publish (pub, message);
+        pub.publish (message);
         std::cout << message << std::endl;
         const auto newTime = helics_federate->requestTime (i);
         std::cout << "processed time " << static_cast<double> (newTime) << "\n";
         while (sub.checkUpdate ())
         {
             const auto nmessage = sub.getValue<std::string> ();
-            std::cout << "received publication on key " << sub.getKey () << " at " << static_cast<double> (sub.getLastUpdate ()) << " ::" << nmessage << '\n';
+            std::cout << "received publication on key " << sub.getDisplayName () << " at " << static_cast<double> (sub.getLastUpdate ()) << " ::" << nmessage << '\n';
         }
 
     }

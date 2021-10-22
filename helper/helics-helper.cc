@@ -17,7 +17,8 @@ SPDX-License-Identifier: BSD-3-Clause
 #include "ns3/helics-static-source-application.h"
 #include "ns3/helics-helper.h"
 
-#include "helics/core/core-types.hpp"
+#include "helics/core/CoreTypes.hpp"
+#include "helics/application_api/typeOperations.hpp"
 
 namespace ns3 {
 
@@ -38,7 +39,7 @@ HelicsHelper::SetupFederate(void) {
     helics::FederateInfo fi{};
     fi.broker = broker;
     fi.coreType = helics::coreTypeFromString(core);
-    fi.setProperty(helics_property_time_delta, helics::loadTimeFromString("1ns"));
+    fi.setProperty(HELICS_PROPERTY_TIME_DELTA, helics::loadTimeFromString("1ns"));
     if (!coreinit.empty()) {
         fi.coreInitString = coreinit;
     }
