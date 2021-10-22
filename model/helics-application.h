@@ -54,11 +54,26 @@ public:
    * \param name name
    */
   void SetFilterName (const std::string &name);
+
+  /**
+   * \brief add filter
+   * @param name name
+   */
+  void AddFilter (const std::string &name);
+
+  /**
+   * \brief create the filter application with an existing filter and endpoint
+   * \param filterInstance the instance of the helics filter object
+   * \param epInstance the instance of the helics endpoint object
+   */
+  void SetupFilterApplication (const helics::Filter &filterInstance, const helics::Endpoint &epInstance);
   /**
    * \brief set the named of this endpoint
    * \param name name
    */
   void SetEndpointName (const std::string &name, bool is_global);
+
+  void SetEndpoint (helics::Endpoint &ep);
   /**
    * \brief set the local address and port
    * \param ip local IPv4 address

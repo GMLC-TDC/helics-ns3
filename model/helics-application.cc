@@ -133,6 +133,16 @@ HelicsApplication::~HelicsApplication()
   m_socket = 0;
 }
 
+void HelicsApplication::SetupFilterApplication (const helics::Filter &filterInstance, const helics::Endpoint &epInstance)
+{
+	  NS_LOG_FUNCTION (this << epInstance.getName());
+	  m_filter_id = filterInstance;
+	  m_endpoint_id = epInstance;
+	  SetName(epInstance.getName());
+	  std::function<void(helics::Endpoint,helics::Time)> func = std::bind (&HelicsApplication::EndpointCallback, this, std::placeholders::_1, std::placeholders::_2);
+	  helics_federate->setMessageNotificationCallback(m_endpoint_id, func);
+}
+
 void
 HelicsApplication::SetFilterName (const std::string &name)
 {
@@ -173,11 +183,27 @@ HelicsApplication::SetEndpointName (const std::string &name, bool is_global)
 }
 
 void
+HelicsApplication::SetEndpoint (helics::Endpoint &ep) {
+  SetName(ep.getName ());
+  using std::placeholders::_1;
+  using std::placeholders::_2;
+  std::function<void(helics::Endpoint,helics::Time)> func;
+  func = std::bind (&HelicsApplication::EndpointCallback, this, _1, _2);
+  m_endpoint_id = ep;
+  helics_federate->setMessageNotificationCallback(ep, func);
+}
+
+void
 HelicsApplication::SetName (const std::string &name)
 {
   NS_LOG_FUNCTION (this << name);
   m_name = name;
-  Names::Add (SanitizeName ("helics_"+name), this);
+  std::string fedName = helics_federate->getName();
+  size_t pos = name.find(fedName);
+  if(pos != std::string::npos) {
+	  m_name.erase(pos, fedName.length()+1);
+  }
+  Names::Add (SanitizeName (m_name), this);
 }
 
 std::string
@@ -296,7 +322,7 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   Ptr<Packet> p;
 
   // Find the HelicsApplication for the destination.
-  Ptr<HelicsApplication> to = Names::Find<HelicsApplication>(SanitizeName ("helics_"+dest));
+  Ptr<HelicsApplication> to = Names::Find<HelicsApplication>(SanitizeName (dest));
   if (!to) {
     NS_FATAL_ERROR("failed HelicsApplication lookup to '" << dest << "'");
   }
@@ -461,7 +487,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
       }
 
       // Sanity check that it's the same size.
-      if (item->second->data.size() != size) {
+      if (item->second != nullptr && item->second->data.size() != size) {
           NS_LOG_INFO ("Reading packet but size differs from Message: "
                   << item->second->data.size() << " != " << size);
       }
@@ -529,6 +555,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
       }
 
       DoRead (std::move (item->second));
+      m_messages.erase(item);
 
     }
 }
