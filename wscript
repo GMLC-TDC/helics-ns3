@@ -122,7 +122,7 @@ int main()
     if conf.env['HELICS']:
         for index,flag in enumerate(conf.env['CXXFLAGS']):
             if 'c++11' in flag:
-                conf.env['CXXFLAGS'][index] = '-std=c++14'
+                conf.env['CXXFLAGS'][index] = '-std=c++17'
                 break
         print(conf.env['CXXFLAGS'])
 
