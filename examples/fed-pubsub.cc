@@ -12,6 +12,16 @@ SPDX-License-Identifier: BSD-3-Clause
 #include <cstring>
 #include "helics/core/helicsCLI11.hpp"
 
+/* This example can be run along with ns3-sndrcv.
+ *
+ * It shows how to register HELICS publications and subscriptions
+ * using the helics_federate object created by the helics-ns3 module.
+ *
+ * Tying subscriptions and publication values in with the simulated
+ * ns-3 network is left as an excersice to the reader. One idea is
+ * creating a custom `ns3::Application` that registers a publication
+ * and then extracts values from received packets and publishes them.
+ */
 int main (int argc, char *argv[])
 {
     using ns3::helics_federate;
