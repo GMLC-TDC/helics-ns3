@@ -105,7 +105,7 @@ HelicsStaticSinkApplication::DoEndpoint (helics::Endpoint id, helics::Time time,
 {
   NS_LOG_FUNCTION (this << id.getName() << time << message->to_string());
 
-  Send(m_destination, std::move (message));
+  Send(m_destination, time, std::move (message));
 }
 
 void
