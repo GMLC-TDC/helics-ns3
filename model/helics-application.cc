@@ -349,9 +349,10 @@ HelicsApplication::Send (std::string dest, helics::Time time, std::unique_ptr<he
   // call to the trace sinks before the packet is actually sent,
   // so that tags added to the packet can be sent as well
   m_txTrace (p);
-  
-  int64_t delay_ns = Time::FromDouble (time, Time::S).GetNanoSeconds() - Simulator::Now ().GetNanoSeconds () + (int64_t) (m_rand_delay_ns->GetValue (m_jitterMinNs,m_jitterMaxNs) + 0.5);
-  // int delay_ns = (int) (m_rand_delay_ns->GetValue (m_jitterMinNs,m_jitterMaxNs) + 0.5);
+
+  int64_t jitter_ns = (int) (m_rand_delay_ns->GetValue (m_jitterMinNs, m_jitterMaxNs) + 0.5);
+  // Calculate the delay between when the event happens relative to current ns-3 simulation time
+  int64_t delay_ns = Time::FromDouble (time, Time::S).GetNanoSeconds() - Simulator::Now ().GetNanoSeconds () + jitter_ns;
 
   if (Ipv4Address::IsMatchingType (m_localAddress))
   {
