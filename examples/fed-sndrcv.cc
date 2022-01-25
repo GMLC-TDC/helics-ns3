@@ -47,12 +47,12 @@ int main (int argc, char *argv[])
 
     std::string target = targetFederate + "/" + targetEndpoint;
     fi.loadInfoFromArgs(argc, argv);
-    fi.setProperty(helics_property_int_log_level, 5);
+    fi.setProperty(HELICS_PROPERTY_INT_LOG_LEVEL, 5);
 
     auto mFed = std::make_unique<helics::MessageFederate> (myname, fi);
     auto name = mFed->getName();
     std::cout << " registering endpoint '" << mysource << "' for " << name<<'\n';
-    auto &idsource = mFed->registerEndpoint(mysource, "");
+    auto &sourceEp = mFed->registerEndpoint(mysource, "");
     std::cout << " registering endpoint '" << mydestination << "' for " << name<<'\n';
     (void)mFed->registerEndpoint(mydestination, "");
 
@@ -63,7 +63,7 @@ int main (int argc, char *argv[])
     std::cout << "entered exec State\n";
     for (int i=1; i<10; ++i) {
         std::string message = "message sent from "+name+"/"+mysource+" to "+target+" at time " + std::to_string(i);
-        mFed->sendMessage(idsource, target, message.data(), message.size());
+        sourceEp.sendTo(message.data(), message.size(), target);
         std::cout << message << std::endl;
         auto newTime = mFed->requestTime (i);
         std::cout << "processed time " << static_cast<double> (newTime) << "\n";
