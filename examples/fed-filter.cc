@@ -16,6 +16,7 @@ SPDX-License-Identifier: BSD-3-Clause
 #include <stdexcept>
 #include "helics/core/helicsCLI11.hpp"
 #include "helics/core/helicsVersion.hpp"
+#include "helics/application_api/timeOperations.hpp"
 
 int main (int argc, char *argv[])
 {
