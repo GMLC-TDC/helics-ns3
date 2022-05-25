@@ -378,7 +378,7 @@ HelicsApplication::Send (std::string dest, helics::Time time, std::unique_ptr<he
         << to->GetName()
         << "' at address "
         << address.GetIpv4()
-        << " port "
+        << " port '"
         << address.GetPort()
         << "' uid '"
         << p->GetUid () <<"'");
@@ -409,7 +409,7 @@ HelicsApplication::Send (std::string dest, helics::Time time, std::unique_ptr<he
         << to->GetName()
         << "' at address "
         << address.GetIpv6()
-        << " port "
+        << " port '"
         << address.GetPort()
         << "' uid '"
         << p->GetUid () <<"'");
@@ -517,7 +517,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
             << size
             << " bytes at address "
             << InetSocketAddress::ConvertFrom (from).GetIpv4 ()
-            << " port "
+            << " port '"
             << InetSocketAddress::ConvertFrom (from).GetPort ()
             << "' sdata '"
             << sdata
@@ -546,7 +546,7 @@ HelicsApplication::HandleRead (Ptr<Socket> socket)
             << size
             << " bytes at address "
             << Inet6SocketAddress::ConvertFrom (from).GetIpv6 ()
-            << " port "
+            << " port '"
             << Inet6SocketAddress::ConvertFrom (from).GetPort ()
             << "' sdata '"
             << sdata
