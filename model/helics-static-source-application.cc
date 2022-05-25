@@ -118,7 +118,7 @@ HelicsStaticSourceApplication::DoRead (std::unique_ptr<helics::Message> message)
 
   NS_LOG_INFO ("sending message on to " << m_destination);
 
-  helics_federate->sendMessage (m_endpoint_id, m_destination, message->data.data(), message->data.size());
+  m_endpoint.sendTo (message->data, m_destination);
 }
 
 } // Namespace ns3

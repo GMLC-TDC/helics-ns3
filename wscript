@@ -98,9 +98,8 @@ int main()
     conf.env['DEFINES_HELICS'] = ['NS3_HELICS']
 
     # Look for HELICS library
-    # HELICS 2.3+: helics-shared, helics-sharedd
-    # HELICS pre-2.3: helics-static, helics-staticd
-    possible_helics_lib_names = ['helics-shared', 'helics-sharedd', 'helics-static', 'helics-staticd']
+    # HELICS 3: helicscpp, helicscppd
+    possible_helics_lib_names = ['helicscpp', 'helicscppd']
     for try_helics_lib in possible_helics_lib_names:
         retval = conf.check_nonfatal(fragment=helics_test_code, lib=try_helics_lib, libpath=conf.env['LIBPATH_HELICS'], use='HELICS')
         if retval:
@@ -119,11 +118,11 @@ int main()
         # if they are enabled.
         conf.env['MODULES_NOT_BUILT'].append('helics')
 
-    # if HELICS is enabled, we must use c++14 instead of c++11
+    # if HELICS is enabled, we must use c++17 instead of c++11
     if conf.env['HELICS']:
         for index,flag in enumerate(conf.env['CXXFLAGS']):
             if 'c++11' in flag:
-                conf.env['CXXFLAGS'][index] = '-std=c++14'
+                conf.env['CXXFLAGS'][index] = '-std=c++17'
                 break
         print(conf.env['CXXFLAGS'])
 

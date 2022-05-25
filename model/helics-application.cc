@@ -138,10 +138,10 @@ void HelicsApplication::SetupFilterApplication (const helics::Filter &filterInst
 {
 	  NS_LOG_FUNCTION (this << epInstance.getName());
 	  m_filter_id = filterInstance;
-	  m_endpoint_id = epInstance;
+	  m_endpoint = epInstance;
 	  SetName(epInstance.getName());
 	  std::function<void(helics::Endpoint,helics::Time)> func = std::bind (&HelicsApplication::EndpointCallback, this, std::placeholders::_1, std::placeholders::_2);
-	  helics_federate->setMessageNotificationCallback(m_endpoint_id, func);
+	  helics_federate->setMessageNotificationCallback(m_endpoint, func);
 }
 
 void
@@ -171,16 +171,16 @@ HelicsApplication::SetEndpointName (const std::string &name, bool is_global)
   NS_LOG_FUNCTION (this << name << is_global);
   SetName(name);
   if (is_global) {
-    m_endpoint_id = helics_federate->registerGlobalEndpoint (name);
+    m_endpoint = helics_federate->registerGlobalEndpoint (name);
   }
   else {
-    m_endpoint_id = helics_federate->registerEndpoint (name);
+    m_endpoint = helics_federate->registerEndpoint (name);
   }
   using std::placeholders::_1;
   using std::placeholders::_2;
   std::function<void(helics::Endpoint,helics::Time)> func;
   func = std::bind (&HelicsApplication::EndpointCallback, this, _1, _2);
-  helics_federate->setMessageNotificationCallback(m_endpoint_id, func);
+  helics_federate->setMessageNotificationCallback(m_endpoint, func);
 }
 
 void
@@ -190,7 +190,7 @@ HelicsApplication::SetEndpoint (helics::Endpoint &ep) {
   using std::placeholders::_2;
   std::function<void(helics::Endpoint,helics::Time)> func;
   func = std::bind (&HelicsApplication::EndpointCallback, this, _1, _2);
-  m_endpoint_id = ep;
+  m_endpoint = ep;
   helics_federate->setMessageNotificationCallback(ep, func);
 }
 
@@ -298,7 +298,7 @@ HelicsApplication::StopApplication ()
 }
 
 static uint8_t
-char_to_uint8_t (char c)
+stdbyte_to_uint8_t (std::byte c)
 {
   return uint8_t(c);
 }
@@ -332,7 +332,7 @@ HelicsApplication::Send (std::string dest, helics::Time time, std::unique_ptr<he
   size_t total_size = message->data.size();
   uint8_t *buffer = new uint8_t[total_size];
   uint8_t *buffer_ptr = buffer;
-  std::transform (message->data.begin(), message->data.end(), buffer_ptr, char_to_uint8_t);
+  std::transform (message->data.begin(), message->data.end(), buffer_ptr, stdbyte_to_uint8_t);
   p = Create<Packet> (buffer, total_size);
   NS_LOG_INFO("buffer='" << p << "'");
   delete [] buffer;
