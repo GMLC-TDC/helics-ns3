@@ -18,8 +18,8 @@ SPDX-License-Identifier: BSD-3-Clause
 #include "ns3/helics-helper.h"
 
 #include "helics/core/CoreTypes.hpp"
-#include "helics/application_api/typeOperations.hpp"
 #include "helics/application_api/timeOperations.hpp"
+#include "helics/application_api/typeOperations.hpp"
 
 namespace ns3 {
 
