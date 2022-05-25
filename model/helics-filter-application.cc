@@ -76,7 +76,7 @@ HelicsFilterApplication::DoEndpoint (helics::Endpoint id, helics::Time time, std
 {
   NS_LOG_FUNCTION (this << id.getName() << time << message->to_string());
 
-  Send (message->original_dest, std::make_unique<helics::Message> (*message));
+  Send (message->original_dest, time, std::make_unique<helics::Message> (*message));
 }
 
 void

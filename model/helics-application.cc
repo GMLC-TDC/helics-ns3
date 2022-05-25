@@ -38,6 +38,7 @@
 
 #include "ns3/helics.h"
 #include "ns3/helics-application.h"
+#include "ns3/helics-simulator-impl.h"
 #include "helics/helics.hpp"
 
 #include <algorithm>
@@ -315,9 +316,9 @@ HelicsApplication::DoFilter (std::unique_ptr<helics::Message> message)
 }
  
 void 
-HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> message)
+HelicsApplication::Send (std::string dest, helics::Time time, std::unique_ptr<helics::Message> message)
 {
-  NS_LOG_FUNCTION (this << dest << message->to_string());
+  NS_LOG_FUNCTION (this << dest << time << message->to_string());
  
   Ptr<Packet> p;
 
@@ -348,8 +349,10 @@ HelicsApplication::Send (std::string dest, std::unique_ptr<helics::Message> mess
   // call to the trace sinks before the packet is actually sent,
   // so that tags added to the packet can be sent as well
   m_txTrace (p);
-  
-  int delay_ns = (int) (m_rand_delay_ns->GetValue (m_jitterMinNs,m_jitterMaxNs) + 0.5);
+
+  int64_t jitter_ns = (int) (m_rand_delay_ns->GetValue (m_jitterMinNs, m_jitterMaxNs) + 0.5);
+  // Calculate the delay between when the event happens relative to current ns-3 simulation time
+  int64_t delay_ns = Time::FromDouble (time, Time::S).GetNanoSeconds() - Simulator::Now ().GetNanoSeconds () + jitter_ns;
 
   if (Ipv4Address::IsMatchingType (m_localAddress))
   {

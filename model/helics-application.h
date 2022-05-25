@@ -102,7 +102,7 @@ public:
   /**
    * \brief Packet creation based on HELICS data sent to dest.
    */
-  void Send (std::string dest, std::unique_ptr<helics::Message> message);
+  void Send (std::string dest, helics::Time time, std::unique_ptr<helics::Message> message);
 
   /**
    * \brief Receive a HELICS message.
