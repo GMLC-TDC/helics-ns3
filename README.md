@@ -1,19 +1,23 @@
 # helics-ns3
 
+**This version of the helics-ns3 module WILL NOT WORK with ns-3.36 or newer. Use ns-3.35 (or slightly older).**
+It uses the WAF contrib build system, and ns-3 switched build systems from WAF to CMake for version 3.36, along with making other breaking changes to their code.
+
+It is recommended to update to the latest versions of helics-ns3 and ns-3; older versions using WAF will not be supported/maintained.
+
 [![Build Status](https://github.com/GMLC-TDC/helics-ns3/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/GMLC-TDC/helics-ns3/actions/workflows/ci.yml)
 
 [helics-ns3](https://github.com/GMLC-TDC/helics-ns3) is an [ns-3](https://www.nsnam.org/) module for coupling network simulations with other simulators using [HELICS](https://www.helics.org/).
 
 ## Prerequisites
 
-Install version 2.1.1+ of [HELICS](https://github.com/GMLC-TDC/HELICS); if building from source, be sure to set the CMake variable `JSONCPP_OBJLIB=ON` and `-DCMAKE_INSTALL_PREFIX=<path to install folder you have access to>`.
-For versions 2.3+,  be sure to set the cmake variables `-DHELICS_BUILD_CXX_SHARED_LIB=ON`.
+Install version 3+ of [HELICS](https://github.com/GMLC-TDC/HELICS); for building from source, be sure to set the CMake variable `-DHELICS_BUILD_CXX_SHARED_LIB=ON` and `-DCMAKE_INSTALL_PREFIX=<path to install folder you have access to>`.
 
-Get a recent copy of ns-3, ideally from their GitLab repository.
+Get a copy of ns-3.35 (slightly older may also work). 
 
 Git:
 ```bash
-git clone https://gitlab.com/nsnam/ns-3-dev.git
+git clone -b ns-3.35 https://gitlab.com/nsnam/ns-3-dev.git
 ```
 
 ## Installation
