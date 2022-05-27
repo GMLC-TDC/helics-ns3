@@ -24,7 +24,7 @@ jobs:
       # Clone ns-3 and checkout this repository to the contrib subfolder
       - name: Clone latest ns-3
         run: |
-          git clone --depth=1 -b ns-3.35 https://gitlab.com/nsnam/ns-3-dev.git .
+          git clone --depth=1 https://gitlab.com/nsnam/ns-3-dev.git .
       - uses: actions/checkout@v2
         with:
           path: contrib/helics
