@@ -36,5 +36,5 @@ jobs:
           ! grep -Fq "HELICS not enabled" gha_waf_configure.log
 
       - name: Build ns-3
-        run: ./ns3 build --jobs
+        run: ./ns3 build --jobs 6
 
