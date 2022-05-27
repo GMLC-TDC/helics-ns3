@@ -8,6 +8,8 @@
 
 ## Prerequisites
 
+Install CMake, preferrably as new as possible (or at least 3.12+), though the absolute minimum is 3.10.
+
 Install version 2.1.1+ of [HELICS](https://github.com/GMLC-TDC/HELICS); if building from source, be sure to set the CMake variable `JSONCPP_OBJLIB=ON` and `-DCMAKE_INSTALL_PREFIX=<path to install folder you have access to>`.
 For versions 2.3+,  be sure to set the cmake variables `-DHELICS_BUILD_CXX_SHARED_LIB=ON`.
 
