@@ -31,9 +31,9 @@ jobs:
 
       - name: Configure ns-3
         run: |
-          ./waf configure --disable-werror --with-helics=/usr/local --enable-modules=helics --enable-examples --enable-tests | tee gha_waf_configure.log
+          ./ns3 configure --disable-werror --enable-examples --enable-tests | tee gha_waf_configure.log
           ! grep -Fq "HELICS not enabled" gha_waf_configure.log
-      
+
       - name: Build ns-3
-        run: ./waf build
+        run: ./ns3 build
 
