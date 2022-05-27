@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(ns3 REQUIRED COMPONENTS libcore libinternet)
+find_dependency(HELICS 2 REQUIRED)
+
+include("${CMAKE_CURRENT_LIST_DIR}/helics-ns3Targets.cmake")
+
