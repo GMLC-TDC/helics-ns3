@@ -99,6 +99,9 @@ set(test_sources
 
 add_library(ns3helics SHARED ${source_files} ${header_files})
 set_property(TARGET ns3helics PROPERTY PUBLIC_HEADER ${header_files})
+set_target_properties(ns3helics PROPERTIES
+    VERSION "${PROJECT_VERSION}"
+)
 target_include_directories(ns3helics PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
