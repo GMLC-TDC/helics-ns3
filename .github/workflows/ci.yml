@@ -17,6 +17,7 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install zeromq boost
       - uses: gmlc-tdc/helics-action/install@main
+        id: helics-install
         with:
           version: 'v2'
           build_from_source: 'true'
@@ -31,6 +32,7 @@ jobs:
 
       - name: Configure ns-3
         run: |
+          export HELICS_ROOT="${{steps.helics-install.outputs.prefix}}"
           ./ns3 configure --disable-werror --enable-examples --enable-tests | tee gha_waf_configure.log
           ! grep -Fq "HELICS not enabled" gha_waf_configure.log
 
