@@ -22,14 +22,10 @@
 #define HELICS_SIMULATOR_IMPL_H
 
 #include "ns3/simulator-impl.h"
-#include "ns3/scheduler.h"
-#include "ns3/event-impl.h"
-#include "ns3/system-thread.h"
-#include "ns3/system-mutex.h"
-
-#include "ns3/ptr.h"
 
 #include <list>
+#include <mutex>
+#include <thread>
 
 /**
  * \file
@@ -109,7 +105,7 @@ private:
    */
   bool m_eventsWithContextEmpty;
   /** Mutex to control access to the list of events with context. */
-  SystemMutex m_eventsWithContextMutex;
+  std::mutex m_eventsWithContextMutex;
 
   /** Container type for the events to run at Simulator::Destroy() */
   typedef std::list<EventId> DestroyEvents;
@@ -135,7 +131,7 @@ private:
   int m_unscheduledEvents;
 
   /** Main execution thread. */
-  SystemThread::ThreadId m_main;
+  std::thread::id m_mainThreadId;
 };
 
 } // namespace ns3

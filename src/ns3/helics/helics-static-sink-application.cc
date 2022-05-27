@@ -11,9 +11,9 @@ SPDX-License-Identifier: BSD-3-Clause
 #include "ns3/log.h"
 #include "ns3/string.h"
 
-#include "ns3/helics.h"
-#include "ns3/helics-application.h"
-#include "ns3/helics-static-sink-application.h"
+#include "ns3/helics/helics.h"
+#include "ns3/helics/helics-application.h"
+#include "ns3/helics/helics-static-sink-application.h"
 #include "helics/helics.hpp"
 
 #include <algorithm>

@@ -10,12 +10,12 @@ SPDX-License-Identifier: BSD-3-Clause
 #include "ns3/ipv4.h"
 #include <memory>
 
-#include "ns3/helics.h"
-#include "ns3/helics-application.h"
-#include "ns3/helics-filter-application.h"
-#include "ns3/helics-static-sink-application.h"
-#include "ns3/helics-static-source-application.h"
-#include "ns3/helics-helper.h"
+#include "ns3/helics/helics.h"
+#include "ns3/helics/helics-application.h"
+#include "ns3/helics/helics-filter-application.h"
+#include "ns3/helics/helics-static-sink-application.h"
+#include "ns3/helics/helics-static-source-application.h"
+#include "ns3/helics/helics-helper.h"
 
 #include "helics/core/core-types.hpp"
 

@@ -17,8 +17,8 @@ SPDX-License-Identifier: BSD-3-Clause
 #include <map>
 #include <string>
 
-#include "helics-id-tag.h"
-#include "helics-application.h"
+#include "ns3/helics/helics-id-tag.h"
+#include "ns3/helics/helics-application.h"
 #include "helics/helics.hpp"
 
 namespace ns3 {

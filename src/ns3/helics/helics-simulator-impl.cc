@@ -18,22 +18,18 @@
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
 
-#include "helics-simulator-impl.h"
+#include "ns3/helics/helics-simulator-impl.h"
 
 #include "ns3/simulator.h"
 #include "ns3/scheduler.h"
-#include "ns3/event-impl.h"
-
-#include "ns3/ptr.h"
-#include "ns3/pointer.h"
 #include "ns3/assert.h"
 #include "ns3/log.h"
 
 #include <cmath>
 
 // HELICS model and helpers
-#include "helics.h"
-#include "ns3/helics-helper.h"
+#include "ns3/helics/helics.h"
+#include "ns3/helics/helics-helper.h"
 
 /**
  * \file
@@ -85,7 +81,7 @@ HelicsSimulatorImpl::HelicsSimulatorImpl ()
   m_currentContext = Simulator::NO_CONTEXT;
   m_unscheduledEvents = 0;
   m_eventsWithContextEmpty = true;
-  m_main = SystemThread::Self();
+  m_mainThreadId = std::this_thread::get_id();
 }
 
 HelicsSimulatorImpl::~HelicsSimulatorImpl ()
@@ -185,7 +181,7 @@ HelicsSimulatorImpl::ProcessEventsWithContext (void)
   // swap queues
   EventsWithContext eventsWithContext;
   {
-    CriticalSection cs (m_eventsWithContextMutex);
+    std::unique_lock lock{m_eventsWithContextMutex};
     m_eventsWithContext.swap(eventsWithContext);
     m_eventsWithContextEmpty = true;
   }
@@ -223,7 +219,7 @@ HelicsSimulatorImpl::Run (void)
 {
   NS_LOG_FUNCTION (this);
   // Set the current threadId as the main threadId
-  m_main = SystemThread::Self();
+  m_mainThreadId = std::this_thread::get_id();
   ProcessEventsWithContext ();
   m_stop = false;
 
@@ -309,7 +305,8 @@ EventId
 HelicsSimulatorImpl::Schedule (Time const &delay, EventImpl *event)
 {
   NS_LOG_FUNCTION (this << delay.GetTimeStep () << event);
-  NS_ASSERT_MSG (SystemThread::Equals (m_main), "Simulator::Schedule Thread-unsafe invocation!");
+  NS_ASSERT_MSG (m_mainThreadId == std::this_thread::get_id(),
+                 "Simulator::Schedule Thread-unsafe invocation!");
 
   Time tAbsolute = delay + TimeStep (m_currentTs);
   NS_LOG_INFO ("m_currentTs='" << m_currentTs << "' tAbsolute='" << tAbsolute << "'");
@@ -332,7 +329,7 @@ HelicsSimulatorImpl::ScheduleWithContext (uint32_t context, Time const &delay, E
 {
   NS_LOG_FUNCTION (this << context << delay.GetTimeStep () << event);
 
-  if (SystemThread::Equals (m_main))
+  if (m_mainThreadId == std::this_thread::get_id())
     {
       Time tAbsolute = delay + TimeStep (m_currentTs);
       Scheduler::Event ev;
@@ -352,7 +349,7 @@ HelicsSimulatorImpl::ScheduleWithContext (uint32_t context, Time const &delay, E
       ev.timestamp = delay.GetTimeStep ();
       ev.event = event;
       {
-        CriticalSection cs (m_eventsWithContextMutex);
+        std::unique_lock lock{m_eventsWithContextMutex};
         m_eventsWithContext.push_back(ev);
         m_eventsWithContextEmpty = false;
       }
@@ -362,7 +359,8 @@ HelicsSimulatorImpl::ScheduleWithContext (uint32_t context, Time const &delay, E
 EventId
 HelicsSimulatorImpl::ScheduleNow (EventImpl *event)
 {
-  NS_ASSERT_MSG (SystemThread::Equals (m_main), "Simulator::ScheduleNow Thread-unsafe invocation!");
+  NS_ASSERT_MSG (m_mainThreadId == std::this_thread::get_id(),
+                 "Simulator::ScheduleNow Thread-unsafe invocation!");
 
   Scheduler::Event ev;
   ev.impl = event;
@@ -378,7 +376,8 @@ HelicsSimulatorImpl::ScheduleNow (EventImpl *event)
 EventId
 HelicsSimulatorImpl::ScheduleDestroy (EventImpl *event)
 {
-  NS_ASSERT_MSG (SystemThread::Equals (m_main), "Simulator::ScheduleDestroy Thread-unsafe invocation!");
+  NS_ASSERT_MSG (m_mainThreadId == std::this_thread::get_id(),
+                 "Simulator::ScheduleDestroy Thread-unsafe invocation!");
 
   EventId id (Ptr<EventImpl> (event, false), m_currentTs, 0xffffffff, 2);
   m_destroyEvents.push_back (id);

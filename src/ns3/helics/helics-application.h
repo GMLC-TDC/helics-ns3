@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 
-#include "helics-id-tag.h"
+#include "ns3/helics/helics-id-tag.h"
 #include "helics/helics.hpp"
 #include "helics/application_api/MessageOperators.hpp"
 

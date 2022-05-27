@@ -17,7 +17,7 @@
  *
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
-#include "helics-id-tag.h"
+#include "ns3/helics/helics-id-tag.h"
 #include "ns3/log.h"
 
 namespace ns3 {

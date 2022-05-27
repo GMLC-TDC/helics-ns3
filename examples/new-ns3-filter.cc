@@ -22,7 +22,7 @@
 #include "ns3/applications-module.h"
 #include "ns3/ipv4-global-routing-helper.h"
 
-#include "ns3/helics-helper.h"
+#include "ns3/helics/helics-helper.h"
 
 #include <chrono>
 #include <thread>

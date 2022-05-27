@@ -36,9 +36,10 @@
 #include "ns3/string.h"
 #include "ns3/random-variable-stream.h"
 
-#include "ns3/helics.h"
-#include "ns3/helics-application.h"
-#include "ns3/helics-simulator-impl.h"
+#include "ns3/helics/helics.h"
+#include "ns3/helics/helics-application.h"
+#include "ns3/helics/helics-simulator-impl.h"
+
 #include "helics/helics.hpp"
 
 #include <algorithm>

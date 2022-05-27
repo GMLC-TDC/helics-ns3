@@ -4,7 +4,7 @@ Copyright (c) 2017-2019, Battelle Memorial Institute; Lawrence Livermore Nationa
 SPDX-License-Identifier: BSD-3-Clause
 */
 
-#include "ns3/helics-helper.h"
+#include "ns3/helics/helics-helper.h"
 #include <iostream>
 #include <memory>
 #include <string>

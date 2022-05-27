@@ -12,7 +12,7 @@ SPDX-License-Identifier: BSD-3-Clause
 #include "ns3/core-module.h"
 #include "ns3/node-container.h"
 
-#include "ns3/helics.h"
+#include "ns3/helics/helics.h"
 
 namespace ns3 {
 
