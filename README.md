@@ -9,6 +9,18 @@ It is recommended to update to the latest versions of helics-ns3 and ns-3; older
 
 [helics-ns3](https://github.com/GMLC-TDC/helics-ns3) is an [ns-3](https://www.nsnam.org/) module for coupling network simulations with other simulators using [HELICS](https://www.helics.org/).
 
+### Older versions of HELICS and/or ns-3
+
+For the last supported releases with older versions of HELICS and ns-3, look for the tags starting with `HELICS-v`and match the HELICS version with the build system (waf or cmake). Or look at the [Releases page](https://github.com/GMLC-TDC/helics-ns3/releases) and find the most recent release for your version of HELICS and ns-3 build system.
+
+For HELICS 3 and ns-3 using waf, `HELICS-v3.x-cmake` is the last tagged release.
+
+For HELICS 2 and ns-3 using CMake, `HELICS-v2.x-cmake` is the last tagged release.
+
+For HELICS 2 and ns-3 using waf, `HELICS-v2.x-waf` is the last tagged release.
+
+For HELICS 1 (upgrade **highly** recommended), ns-3 using CMake is not supported; the final tag is `HELICS-v1.3.x`.
+
 ## Prerequisites
 
 Install version 3+ of [HELICS](https://github.com/GMLC-TDC/HELICS); for building from source, be sure to set the CMake variable `-DHELICS_BUILD_CXX_SHARED_LIB=ON` and `-DCMAKE_INSTALL_PREFIX=<path to install folder you have access to>`.
