@@ -2,6 +2,9 @@ name: CI
 
 on: [push, pull_request, workflow_dispatch]
 
+env:
+  MACOSX_DEPLOYMENT_TARGET: 10.15
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
