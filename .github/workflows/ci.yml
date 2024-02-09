@@ -28,7 +28,7 @@ jobs:
       - name: Clone latest ns-3
         run: |
           git clone --depth=1 -b ns-3.35 https://gitlab.com/nsnam/ns-3-dev.git .
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: contrib/helics
 
