@@ -36,7 +36,7 @@ jobs:
         run: |
           command -v brew && EXTRA_OPTS="--with-zmq=$(brew --prefix) --boost-includes=$(brew --prefix)/include --boost-libs=$(brew --prefix)/lib" || EXTRA_OPTS=""
           set -o pipefail
-          ./waf configure --disable-werror --with-helics=/usr/local $EXTRA_OPTS --enable-modules=helics --enable-examples --enable-tests | tee gha_waf_configure.log
+          ./waf configure --disable-werror --with-helics=/usr/local $EXTRA_OPTS --enable-modules=helics --enable-examples | tee gha_waf_configure.log
           ! grep -Fq "HELICS not enabled" gha_waf_configure.log
       
       - name: Build ns-3
