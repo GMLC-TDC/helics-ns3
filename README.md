@@ -41,7 +41,7 @@ cd ns-3-dev/
 git clone https://github.com/GMLC-TDC/helics-ns3 contrib/helics
 ```
 
-Run `./waf configure` with the `--disable-werror` option, and set the `--with-helics` option to the path of your HELICS installation. To enable examples or tests use `--enable-examples` or `--enable-tests`, respectively. If ZMQ is not found, `--with-zmq` can be used to specify where it is installed. Paths should be absolute.
+Run `./waf configure` with the `--disable-werror` option, and set the `--with-helics` option to the path of your HELICS installation. To enable examples or tests use `--enable-examples` or `--enable-tests`, respectively. If ZMQ is not found, `--with-zmq` can be used to specify where it is installed (for macOS Homebrew users, `brew --prefix` will give the correct location). Paths should be absolute.
 
 After configuration is done, run `./waf build` to compile ns-3 with the HELICS module.
 
