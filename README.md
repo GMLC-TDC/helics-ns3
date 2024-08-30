@@ -13,7 +13,7 @@ It is recommended to update to the latest versions of helics-ns3 and ns-3; older
 
 For the last supported releases with older versions of HELICS and ns-3, look for the tags starting with `HELICS-v`and match the HELICS version with the build system (waf or cmake). Or look at the [Releases page](https://github.com/GMLC-TDC/helics-ns3/releases) and find the most recent release for your version of HELICS and ns-3 build system.
 
-For HELICS 3 and ns-3 using waf, `HELICS-v3.x-cmake` is the last tagged release.
+For HELICS 3 and ns-3 using waf, `HELICS-v3.x-waf` is the last tagged release.
 
 For HELICS 2 and ns-3 using CMake, `HELICS-v2.x-cmake` is the last tagged release.
 
